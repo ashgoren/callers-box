@@ -12,6 +12,7 @@ export const useTable = <TData>(
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    initialState
+    initialState,
+    enableSortingRemoval: false,
   });
 };
