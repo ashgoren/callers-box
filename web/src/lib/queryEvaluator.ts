@@ -1,10 +1,6 @@
 import type { RuleGroupType, RuleType } from 'react-querybuilder';
 
-interface ExtendedRule extends RuleType {
-  negated?: boolean;
-}
-
-const evaluateRule = (row: any, rule: ExtendedRule): boolean => {
+const evaluateRule = (row: any, rule: RuleType): boolean => {
   const value = row[rule.field];
   const filterValue = rule.value;
 
@@ -18,42 +14,45 @@ const evaluateRule = (row: any, rule: ExtendedRule): boolean => {
   const downcasedValue = typeof value === 'string' ? value.toLowerCase() : value;
   const downcasedFilterValue = typeof filterValue === 'string' ? filterValue.toLowerCase() : filterValue;
 
-  let result: boolean;
   switch (rule.operator) {
-    case '=': result = downcasedValue == downcasedFilterValue; break;
-    case '!=': result = downcasedValue != downcasedFilterValue; break;
-    case 'contains': result = downcasedValue.includes(downcasedFilterValue); break;
-    case 'beginsWith': result = downcasedValue.startsWith(downcasedFilterValue); break;
-    case 'endsWith': result = downcasedValue.endsWith(downcasedFilterValue); break;
-    case 'doesNotContain': result = !downcasedValue.includes(downcasedFilterValue); break;
-    case 'doesNotBeginWith': result = !downcasedValue.startsWith(downcasedFilterValue); break;
-    case 'doesNotEndWith': result = !downcasedValue.endsWith(downcasedFilterValue); break;
-    case '>': result = Number(value) > Number(filterValue); break;
-    case '>=': result = Number(value) >= Number(filterValue); break;
-    case '<': result = Number(value) < Number(filterValue); break;
-    case '<=': result = Number(value) <= Number(filterValue); break;
-    case 'null': result = value == null || value === ''; break;
-    case 'notNull': result = value != null && value !== ''; break;
+    case '=':
+      if (filterValue === 'true') return value === true || String(value).toLowerCase() === 'true';
+      if (filterValue === 'falsey') return !value || value === '' || String(value).toLowerCase() === 'false';
+      return downcasedValue == downcasedFilterValue;
+    case '!=':
+      if (filterValue === 'true') return !(value === true || String(value).toLowerCase() === 'true');
+      if (filterValue === 'falsey') return !(!value || value === '' || String(value).toLowerCase() === 'false');
+      return downcasedValue != downcasedFilterValue;
+    case 'contains': return downcasedValue?.includes(downcasedFilterValue);
+    case 'beginsWith': return downcasedValue?.startsWith(downcasedFilterValue);
+    case 'endsWith': return downcasedValue?.endsWith(downcasedFilterValue);
+    case 'doesNotContain': return !downcasedValue?.includes(downcasedFilterValue);
+    case 'doesNotBeginWith': return !downcasedValue?.startsWith(downcasedFilterValue);
+    case 'doesNotEndWith': return !downcasedValue?.endsWith(downcasedFilterValue);
+    case '>': return Number(value) > Number(filterValue);
+    case '>=': return Number(value) >= Number(filterValue);
+    case '<': return Number(value) < Number(filterValue);
+    case '<=': return Number(value) <= Number(filterValue);
+    case 'null': return value === null || value === undefined || value === '';
+    case 'notNull': return value !== null && value !== undefined && value !== '';
     case 'between': {
       const [min, max] = String(filterValue).split(',').map(Number);
-      result = Number(value) >= min && Number(value) <= max; break;
+      return Number(value) >= min && Number(value) <= max;
     };
     case 'notBetween': {
       const [min, max] = String(filterValue).split(',').map(Number);
-      result = Number(value) < min || Number(value) > max; break;
+      return Number(value) < min || Number(value) > max;
     };
     case 'in': {
       const values = String(filterValue).split(',').map(v => v.trim().toLowerCase());
-      result = values.includes(String(value).toLowerCase()); break;
+      return values.includes(String(value).toLowerCase());
     };
     case 'notIn': {
       const values = String(filterValue).split(',').map(v => v.trim().toLowerCase());
-      result = !values.includes(String(value).toLowerCase()); break;
+      return !values.includes(String(value).toLowerCase());
     };
-    default: result = true;
+    default: return true;
   }
-
-  return rule.negated ? !result : result;
 };
 
 export const evaluateQuery = (row: any, query: RuleGroupType): boolean => {
