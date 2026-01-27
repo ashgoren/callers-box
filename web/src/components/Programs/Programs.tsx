@@ -1,24 +1,30 @@
+import { useEffect } from 'react';
+import { useTitle } from '@/contexts/TitleContext';
 import { useTable } from '@/hooks/useTable';
-import { DataTable } from '@/components/DataTable';
-import { columns, initialState } from './columns';
 import { usePrograms } from '@/hooks/usePrograms';
+import { DataTable } from '@/components/DataTable';
+import { QueryBuilderComponent } from '@/components/QueryBuilder';
+import { fields, defaultQuery, columns, initialState } from './columns';
+import { Spinner, ErrorMessage } from '@/components/shared';
 
 export const Programs = () => {
+  const { setTitle } = useTitle();
+  useEffect(() => setTitle('Programs'), [setTitle]);
+
   const { data, error, isLoading } = usePrograms();
+  const { table, query, setQuery } = useTable(data, columns, defaultQuery, initialState);
 
-  const table = useTable(data, columns, initialState);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error loading programs: {(error as Error).message}</div>;
-  }
+  if (isLoading) return <Spinner />;
+  if (error) return <ErrorMessage error={error} />;
 
   return (
     <>
-      <h1>Programs</h1>
+      <QueryBuilderComponent
+        fields={fields}
+        defaultQuery={defaultQuery}
+        query={query}
+        onQueryChange={setQuery}
+      />
       <DataTable table={table} />
     </>
   );

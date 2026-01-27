@@ -6,13 +6,19 @@ import { FilterButton } from './FilterButton';
 import { ModeToggle } from './ModeToggle';
 import { VisualQueryBuilder } from './VisualQueryBuilder';
 import { SQLEditor } from './SQLEditor';
-import { defaultQuery } from './constants';
 import { removeEmptyRules, countActiveRules } from './utils';
-import type { QueryBuilderComponentProps } from './types';
+import type { Field, RuleGroupType } from 'react-querybuilder';
 
 type QueryMode = 'visual' | 'sql';
 
-export const QueryBuilderComponent = ({ fields, query, onQueryChange }: QueryBuilderComponentProps) => {
+type QueryBuilderComponentProps = {
+  fields: Field[];
+  defaultQuery: RuleGroupType;
+  query: RuleGroupType;
+  onQueryChange: (query: RuleGroupType) => void;
+};
+
+export const QueryBuilderComponent = ({ fields, defaultQuery, query, onQueryChange }: QueryBuilderComponentProps) => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [mode, setMode] = useState<QueryMode>('visual');
   const [sqlText, setSqlText] = useState('');

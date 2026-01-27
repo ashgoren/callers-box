@@ -1,4 +1,4 @@
-import { ExternalLink } from '@/components/shared/ExternalLink';
+import { ExternalLink } from '@/components/shared';
 import { TruncatedCell } from '@/components/TruncatedCell';
 import { createColumnHelper, type CellContext } from '@tanstack/react-table';
 import type { Dance } from '@/lib/types/database';
@@ -16,6 +16,11 @@ export const fields = [
   { name: 'moves', label: 'Moves', inputType: 'string' },
   { name: 'swing_16', label: '16-beat swing?', inputType: 'boolean' }
 ];
+
+export const defaultQuery = {
+  combinator: 'and',
+  rules: [{ field: 'title', operator: 'contains', value: '' }]
+}
 
 export const columns = [
   columnHelper.accessor('title', { 

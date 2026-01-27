@@ -1,14 +1,7 @@
-import type { RuleGroupType } from 'react-querybuilder';
-
 export const combinators = [
   { name: 'and', label: 'ALL of these (AND)' },
   { name: 'or', label: 'ANY of these (OR)' },
 ];
-
-export const defaultQuery: RuleGroupType = {
-  combinator: 'and',
-  rules: [{ field: 'title', operator: 'contains', value: '' }],
-};
 
 export const operators = [
   { name: 'contains', label: 'contains' },
@@ -53,3 +46,4 @@ export const negativeOperators = ['!=', 'doesNotContain', 'doesNotBeginWith', 'd
 export const textOperators = ['=', '!=', 'contains', 'doesNotContain', 'beginsWith', 'doesNotBeginWith', 'endsWith', 'doesNotEndWith', 'null', 'notNull'];
 export const numberOperators = ['=', '!=', '>', '>=', '<', '<=', 'between', 'notBetween', 'null', 'notNull'];
 export const booleanOperators = ['=', '!='];
+export const dateOperators = ['=', '!=', '>', '>=', '<', '<=', 'between', 'notBetween', 'null', 'notNull'];

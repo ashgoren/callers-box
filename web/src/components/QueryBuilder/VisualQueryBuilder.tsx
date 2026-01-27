@@ -1,9 +1,14 @@
 import { QueryBuilder } from 'react-querybuilder';
 import { QueryBuilderMaterial } from '@react-querybuilder/material';
 import { OperatorSelector } from './OperatorSelector';
-import { combinators, operators, textOperators, numberOperators, booleanOperators } from './constants';
-import type { QueryBuilderComponentProps } from './types';
-import type { Field } from 'react-querybuilder';
+import { combinators, operators, textOperators, numberOperators, booleanOperators, dateOperators } from './constants';
+import type { Field, RuleGroupType } from 'react-querybuilder';
+
+type QueryBuilderComponentProps = {
+  fields: Field[];
+  query: RuleGroupType;
+  onQueryChange: (query: RuleGroupType) => void;
+};
 
 export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilderComponentProps) => (
   <QueryBuilderMaterial>
@@ -31,6 +36,7 @@ const getOperatorsForField = (field: string, misc: FieldMisc) => {
   if (inputType === 'string') return operators.filter(op => textOperators.includes(op.name));
   if (inputType === 'number') return operators.filter(op => numberOperators.includes(op.name));
   if (inputType === 'boolean') return operators.filter(op => booleanOperators.includes(op.name));
+  if (inputType === 'date') return operators.filter(op => dateOperators.includes(op.name));
   return null;
 };
 

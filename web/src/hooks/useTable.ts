@@ -1,18 +1,14 @@
 import { useState } from 'react';
 import { getCoreRowModel, getSortedRowModel, getFilteredRowModel, useReactTable, type InitialTableState } from '@tanstack/react-table';
-import { evaluateQuery } from '@/lib/queryEvaluator';
+import { evaluateQuery } from '@/components/QueryBuilder/queryEvaluator';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { RuleGroupType } from 'react-querybuilder';
-
-const defaultQuery: RuleGroupType = {
-  combinator: 'and',
-  rules: [{ field: 'title', operator: 'contains', value: '' }]
-};
 
 export const useTable = <TData>(
   data: TData[] | undefined,
   columns: ColumnDef<TData, any>[],
-  initialState?: Partial<InitialTableState>
+  defaultQuery : RuleGroupType,
+  initialState?: Partial<InitialTableState>,
 ) => {
   const [query, setQuery] = useState<RuleGroupType>(defaultQuery);
 
