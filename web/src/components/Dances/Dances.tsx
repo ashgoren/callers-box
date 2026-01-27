@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useTable } from '@/hooks/useTable';
 import { DataTable } from '@/components/DataTable';
-import { columns, initialState } from './columns';
+import { fields, columns, initialState } from './columns';
 import { useDances } from '@/hooks/useDances';
 import { useTitle } from '@/contexts/TitleContext';
 import { QueryBuilderComponent } from '@/components/QueryBuilder';
@@ -18,7 +18,7 @@ export const Dances = () => {
 
   return (
     <>
-      <QueryBuilderComponent columns={columns} query={query} onQueryChange={setQuery} />
+      <QueryBuilderComponent fields={fields} query={query} onQueryChange={setQuery} />
       <DataTable table={table} />
     </>
   );

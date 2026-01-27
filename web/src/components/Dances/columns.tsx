@@ -7,6 +7,16 @@ type CellInfo = CellContext<Dance, string | null>;
 
 const columnHelper = createColumnHelper<Dance>();
 
+export const fields = [
+  { name: 'title', label: 'Title', inputType: 'string' },
+  { name: 'choreographer', label: 'Choreographer', inputType: 'string' },
+  { name: 'difficulty', label: 'Difficulty', inputType: 'number' },
+  { name: 'notes', label: 'Notes', inputType: 'string' },
+  { name: 'place_in_program', label: 'Place in Program', inputType: 'string' },
+  { name: 'moves', label: 'Moves', inputType: 'string' },
+  { name: 'swing_16', label: '16-beat swing?', inputType: 'boolean' }
+];
+
 export const columns = [
   columnHelper.accessor('title', { 
     header: 'Title',
