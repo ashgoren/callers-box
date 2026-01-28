@@ -26,6 +26,11 @@ export const columns = [
     header: 'Date',
     size: 35,
     minSize: 30,
+    cell: info => info.row.original ? new Date(info.getValue()!).toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: '2-digit',
+    }) : '',
   }),
   columnHelper.accessor('location', {
     header: 'Location',

@@ -4,6 +4,7 @@ import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow
 
 export const DataTable = <TData,>({ table }: { table: ReactTable<TData> }) => {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
+  const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
 
   const getPinnedStyles = <TData,>({ column, isLastPinned, isHovered, isHeader }: {
     isHovered: boolean;
@@ -71,13 +72,27 @@ export const DataTable = <TData,>({ table }: { table: ReactTable<TData> }) => {
                   }}
                 >
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      cursor: header.column.getCanSort() ? 'pointer' : 'default',
+                    }}
+                    onClick={header.column.getCanSort() ? header.column.getToggleSortingHandler() : undefined}
+                    onMouseEnter={() => header.column.getCanSort() && setHoveredColumn(header.column.id)}
+                    onMouseLeave={() => setHoveredColumn(null)}
+                  >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       {header.column.getCanSort() ? (
                         <TableSortLabel
-                          active={!!header.column.getIsSorted()}
+                          active={Boolean(header.column.getIsSorted()) || hoveredColumn === header.column.id}
                           direction={header.column.getNextSortingOrder() === 'asc' ? 'asc' : 'desc'}
-                          onClick={header.column.getToggleSortingHandler()}
+                          sx={{
+                            '& .MuiTableSortLabel-icon path': {
+                              fill: header.column.getIsSorted() ? 'currentColor' : '#999',
+                            }
+                          }}
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                         </TableSortLabel>
