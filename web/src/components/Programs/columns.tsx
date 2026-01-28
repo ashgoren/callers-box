@@ -34,7 +34,7 @@ export const columns = [
   }),
   columnHelper.display({
     id: 'dances',
-    header: 'Dances',
+    header: '🔗 Dances',
     cell: info => info.row.original.programs_dances.map(pd =>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }} key={pd.dance.id}>
         {pd.order} - {pd.dance.title}

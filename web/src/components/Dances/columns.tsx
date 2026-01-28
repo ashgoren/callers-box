@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import { ExternalLink } from '@/components/shared';
 import { TruncatedCell } from '@/components/TruncatedCell';
 import { createColumnHelper, type CellContext } from '@tanstack/react-table';
@@ -14,7 +15,8 @@ export const fields = [
   { name: 'notes', label: 'Notes', inputType: 'string' },
   { name: 'place_in_program', label: 'Place in Program', inputType: 'string' },
   { name: 'moves', label: 'Moves', inputType: 'string' },
-  { name: 'swing_16', label: '16-beat swing?', inputType: 'boolean' }
+  { name: 'swing_16', label: '16-beat swing?', inputType: 'boolean' },
+  { name: 'programNames', label: 'Programs', inputType: 'string' },
 ];
 
 export const defaultQuery = {
@@ -81,6 +83,18 @@ export const columns = [
     enableResizing: false,
     size: 70,
     minSize: 70
+  }),
+  columnHelper.display({
+    id: 'programs',
+    header: '🔗 Programs',
+    cell: info => info.row.original.programs_dances.map(pd =>
+      <Box key={pd.program.id}>
+        {pd.program.date} - {pd.program.location}
+      </Box>
+    ),
+    enableColumnFilter: false,
+    size: 300,
+    minSize: 100,
   }),
 ];
 
