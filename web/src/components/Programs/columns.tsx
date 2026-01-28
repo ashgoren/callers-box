@@ -19,18 +19,18 @@ export const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
     enableColumnFilter: false,
-    size: 5,
-    minSize: 5,
+    size: 15,
+    minSize: 15,
   }),
   columnHelper.accessor('date', {
     header: 'Date',
-    size: 10,
-    minSize: 10,
+    size: 35,
+    minSize: 30,
   }),
   columnHelper.accessor('location', {
     header: 'Location',
-    size: 20,
-    minSize: 15,
+    size: 50,
+    minSize: 40,
   }),
   columnHelper.display({
     id: 'dances',
@@ -40,11 +40,11 @@ export const columns = [
         {pd.order} - {pd.dance.title}
       </Box>
     ),
-    size: 40,
-    minSize: 15,
+    size: 300,
+    minSize: 100,
   }),
 ];
 
 export const initialState = {
-  sorting: [{ id: 'date', desc: false }]
+  sorting: [{ id: 'date', desc: true }]
 };

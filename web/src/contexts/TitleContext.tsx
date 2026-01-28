@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 interface TitleContextType {
   title: string;
@@ -13,6 +13,10 @@ const TitleContext = createContext<TitleContextType>({
 
 export const TitleProvider = ({ children }: { children: React.ReactNode }) => {
   const [title, setTitle] = useState("Caller's Box");
+
+  useEffect(() => {
+    document.title = `${title} | Caller's Box`;
+  }, [title]);
 
   return (
     <TitleContext.Provider value={{ title, setTitle }}>
