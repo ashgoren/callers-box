@@ -1,5 +1,5 @@
-import { Box } from '@mui/material';
 import { createColumnHelper } from "@tanstack/react-table";
+import { CellLinkedDances } from "./CellLinkedDances";
 import { dateToLocaleString } from '@/lib/utils';
 import type { Program } from '@/lib/types/database';
 
@@ -37,11 +37,7 @@ export const columns = [
   columnHelper.display({
     id: 'dances',
     header: '🔗 Dances',
-    cell: info => info.row.original.programs_dances.map(pd =>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }} key={pd.dance.id}>
-        {pd.order} - {pd.dance.title}
-      </Box>
-    ),
+    cell: info => <CellLinkedDances programsDances={info.row.original.programs_dances} />,
     size: 300,
     minSize: 100,
   }),

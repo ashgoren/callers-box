@@ -1,26 +1,51 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createContext, useContext, useState, useMemo, type ReactNode } from 'react';
 
-type DrawerContextType = {
-  drawerOpen: boolean;
-  setDrawerOpen: (open: boolean) => void;
-  drawerWidth: number;
+type DrawerState = {
+  isOpen: boolean;
+  model: string | null;
+  id: number | null;
 };
 
-const DrawerContext = createContext<DrawerContextType | null>(null);
+type DrawerActions = {
+  openDrawer: (model: string, id: number) => void;
+  closeDrawer: () => void;
+};
+
+const DrawerStateContext = createContext<DrawerState | null>(null);
+const DrawerActionsContext = createContext<DrawerActions | null>(null);
 
 export const DrawerProvider = ({ children }: { children: ReactNode }) => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  
+  const [state, setState] = useState<DrawerState>({ 
+    isOpen: false, model: null, id: null 
+  });
+
+  const actions = useMemo(() => ({
+    openDrawer: (model: string, id: number) => {
+      setState({ isOpen: true, model, id });
+    },
+    closeDrawer: () => {
+      setState(prev => ({ ...prev, isOpen: false }));
+    }
+  }), []);
+
   return (
-    <DrawerContext.Provider value={{ drawerOpen, setDrawerOpen, drawerWidth: 400 }}>
-      {children}
-    </DrawerContext.Provider>
+    <DrawerActionsContext.Provider value={actions}>
+      <DrawerStateContext.Provider value={state}>
+        {children}
+      </DrawerStateContext.Provider>
+    </DrawerActionsContext.Provider>
   );
 };
 
-export const useDrawer = () => {
-  const context = useContext(DrawerContext);
-  if (!context) throw new Error('useDrawer must be used within DrawerProvider');
+export const useDrawerState = () => {
+  const context = useContext(DrawerStateContext);
+  if (!context) throw new Error('useDrawerState must be used within DrawerProvider');
+  return context;
+};
+
+export const useDrawerActions = () => {
+  const context = useContext(DrawerActionsContext);
+  if (!context) throw new Error('useDrawerActions must be used within DrawerProvider');
   return context;
 };

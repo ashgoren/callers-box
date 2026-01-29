@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { flexRender, type Table as ReactTable, type Column, type Row } from '@tanstack/react-table';
+import { flexRender, type Table as ReactTable, type Column } from '@tanstack/react-table';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Box } from '@mui/material';
 
 export const DataTable = <TData,>({ table, onRowClick }: {
   table: ReactTable<TData>,
-  onRowClick?: (row: Row<TData>) => void
+  onRowClick?: (data: TData) => void
 }) => {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
   const [hoveredColumn, setHoveredColumn] = useState<string | null>(null);
@@ -134,7 +134,7 @@ export const DataTable = <TData,>({ table, onRowClick }: {
           {table.getRowModel().rows.map(row => (
             <TableRow
               key={row.id}
-              onClick={() => onRowClick?.(row)}
+              onClick={() => onRowClick?.(row.original)}
               onMouseEnter={() => setHoveredRow(row.id)}
               onMouseLeave={() => setHoveredRow(null)}
               sx={{

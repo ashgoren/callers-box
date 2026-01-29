@@ -1,7 +1,7 @@
-import { Box } from '@mui/material';
 import { ExternalLink } from '@/components/shared';
 import { TooltipCell } from '@/components/TooltipCell';
 import { createColumnHelper, type CellContext } from '@tanstack/react-table';
+import { CellLinkedPrograms } from './CellLinkedPrograms';
 import type { Dance } from '@/lib/types/database';
 
 type CellInfo = CellContext<Dance, string | null>;
@@ -87,11 +87,7 @@ export const columns = [
   columnHelper.display({
     id: 'programs',
     header: '🔗 Programs',
-    cell: info => info.row.original.programs_dances.map(pd =>
-      <Box key={pd.program.id}>
-        {pd.program.date} - {pd.program.location}
-      </Box>
-    ),
+    cell: info => <CellLinkedPrograms programsDances={info.row.original.programs_dances} />,
     enableColumnFilter: false,
     size: 300,
     minSize: 100,

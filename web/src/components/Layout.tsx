@@ -6,7 +6,7 @@ import Brightness6Icon from '@mui/icons-material/Brightness6';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import HomeIcon from '@mui/icons-material/Home';
 import { useTitle } from '@/contexts/TitleContext';
-import { useDrawer } from '@/contexts/DrawerContext';
+import { useDrawerState } from '@/contexts/DrawerContext';
 import { grey } from '@mui/material/colors';
 import type { ReactNode } from 'react';
 
@@ -43,13 +43,21 @@ const theme = createTheme({
 });
 
 export const Layout = ({ children }: { children: ReactNode }) => {
-  const { drawerOpen, drawerWidth } = useDrawer();
+  const { isOpen } = useDrawerState();
+
+  const drawerWidth = 400;
 
   return (
     <ThemeProvider theme={theme} defaultMode='system'>
       <CssBaseline />
       <LayoutContent>
-        <Box sx={{ mr: drawerOpen ? `${drawerWidth}px` : 0, transition: 'margin 0.1s' }}>
+        <Box sx={{
+            mr: isOpen ? `${drawerWidth}px` : 0,
+            transition: theme => theme.transitions.create('margin', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen,
+            })
+          }}>
           {children}
         </Box>
       </LayoutContent>
