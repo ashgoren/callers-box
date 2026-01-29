@@ -68,7 +68,7 @@ export const QueryBuilderComponent = ({ fields, defaultQuery, query, onQueryChan
       />
 
       <Collapse in={filterOpen}>
-        <Paper sx={styles}>
+        <Paper sx={{ mb: 2, p: 2, boxShadow: 3, borderRadius: 2, minWidth: 500, backgroundColor: 'action.hover' }}>
           <ModeToggle mode={mode} handleModeChange={handleModeChange} />
 
           {mode === 'visual' ?
@@ -85,54 +85,3 @@ export const QueryBuilderComponent = ({ fields, defaultQuery, query, onQueryChan
     </>
   );
 };
-
-const styles = {
-  mb: 2,
-  p: 2,
-  boxShadow: 3,
-  borderRadius: 2,
-  minWidth: 500,
-  backgroundColor: 'action.hover',
-  '& .rule': { 
-    display: 'flex', 
-    gap: 2,
-    alignItems: 'center' 
-  },
-  '& .ruleGroup-header': { 
-    display: 'flex', 
-    gap: 2, 
-    alignItems: 'center' 
-  },
-  '& .ruleGroup-body': { 
-    display: 'flex', 
-    flexDirection: 'column', 
-    gap: 2,
-    pt: 2,
-  },
-  '& .ruleGroup': { 
-    mt: 2,
-    p: 2,
-    borderLeft: '3px solid',
-    borderColor: 'secondary.main',
-    backgroundColor: 'background.paper',
-    borderRadius: 1,
-  },
-  '& .ruleGroup .ruleGroup': {
-    backgroundColor: 'action.selected',
-    borderColor: 'primary.main'
-  },
-  '& .ruleGroup .ruleGroup .ruleGroup': {
-    backgroundColor: 'background.paper',
-  },
-  '& > .ruleGroup': { 
-    mt: 0,
-    p: 0,
-    borderLeft: 'none',
-    backgroundColor: 'transparent',
-    borderRadius: 0,
-  },
-  '& .betweenRules': { my: 1 },
-  '& .rule-fields': { width: 150, flexShrink: 0 },
-  '& .rule-operators': { width: 180, flexShrink: 0 },
-  '& .rule-value': { width: 200, flexShrink: 0 },
-}
