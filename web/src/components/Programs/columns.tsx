@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import { createColumnHelper } from "@tanstack/react-table";
+import { dateToLocaleString } from '@/lib/utils';
 import type { Program } from '@/lib/types/database';
 
 const columnHelper = createColumnHelper<Program>();
@@ -13,29 +14,25 @@ export const fields = [
 export const defaultQuery = {
   combinator: 'and',
   rules: [{ field: 'date', operator: '=', value: '' }]
-}
+};
 
 export const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
     enableColumnFilter: false,
-    size: 15,
-    minSize: 15,
+    size: 20,
+    minSize: 20,
   }),
   columnHelper.accessor('date', {
     header: 'Date',
-    size: 35,
-    minSize: 30,
-    cell: info => info.row.original ? new Date(info.getValue()!).toLocaleString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: '2-digit',
-    }) : '',
+    size: 50,
+    minSize: 50,
+    cell: info => info.row.original ? dateToLocaleString(new Date(info.getValue()!)) : '',
   }),
   columnHelper.accessor('location', {
     header: 'Location',
-    size: 50,
-    minSize: 40,
+    size: 60,
+    minSize: 60,
   }),
   columnHelper.display({
     id: 'dances',

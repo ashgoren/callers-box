@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import { ExternalLink } from '@/components/shared';
-import { TruncatedCell } from '@/components/TruncatedCell';
+import { TooltipCell } from '@/components/TooltipCell';
 import { createColumnHelper, type CellContext } from '@tanstack/react-table';
 import type { Dance } from '@/lib/types/database';
 
@@ -53,21 +53,21 @@ export const columns = [
     size: 300,
     minSize: 120,
     filterFn: 'includesString',
-    cell: info => info.getValue() ? <TruncatedCell content={info.getValue()} title={`Notes: ${info.row.original.title}`} /> : null
+    cell: info => info.getValue() ? <TooltipCell content={info.getValue()} /> : null
   }),
   columnHelper.accessor('place_in_program', {
     header: 'Place in Program',
     size: 250,
     minSize: 150,
     filterFn: 'includesString',
-    cell: info => info.getValue() ? <TruncatedCell content={info.getValue()} title={`Place in Program: ${info.row.original.title}`} /> : null
+    cell: info => info.getValue() ? <TooltipCell content={info.getValue()} /> : null
   }),
   columnHelper.accessor('moves', {
     header: 'Moves',
     size: 200,
     minSize: 120,
     filterFn: 'includesString',
-    cell: info => info.getValue() ? <TruncatedCell content={info.getValue()} title={`Moves: ${info.row.original.title}`} /> : null
+    cell: info => info.getValue() ? <TooltipCell content={info.getValue()} /> : null
   }),
   columnHelper.accessor('swing_16', {
     header: '16-beat swing?',

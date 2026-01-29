@@ -1,6 +1,7 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/react-query';
 import { TitleProvider } from './contexts/TitleContext';
+import { DrawerProvider } from '@/contexts/DrawerContext';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { Layout } from './components/Layout';
 import { Dances } from './components/Dances';
@@ -12,13 +13,15 @@ function App() {
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
         <TitleProvider>
-          <Layout>
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/dances' element={<Dances />} />
-              <Route path='/programs' element={<Programs />} />
-            </Routes>
-          </Layout>
+          <DrawerProvider>
+            <Layout>
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/dances' element={<Dances />} />
+                <Route path='/programs' element={<Programs />} />
+              </Routes>
+            </Layout>
+          </DrawerProvider>
         </TitleProvider>
       </QueryClientProvider>
     </BrowserRouter>
