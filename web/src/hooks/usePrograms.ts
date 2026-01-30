@@ -1,12 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
-import { getProgram, getPrograms } from '@/lib/api/programs'
-import type { Program } from '@/lib/types/database';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { getProgram, getPrograms, updateProgram, createProgram } from '@/lib/api/programs'
+import type { Program, ProgramInsert, ProgramUpdate } from '@/lib/types/database';
 
 export const usePrograms = () => {
   return useQuery({
     queryKey: ['programs'],
     queryFn: getPrograms,
-    select: data => data.map((program: Program) => buildProgram(program)),
+    select: (data: Program[]) => data.map(program => buildProgramsColumn(program)),
   })
 };
 
@@ -14,11 +14,38 @@ export const useProgram = (id: number) => {
   return useQuery({
     queryKey: ['program', id],
     queryFn: () => getProgram(id),
-    select: data => buildProgram(data)
+    enabled: !!id,
+    select: (data: Program) => buildProgramsColumn(data)
   })
 };
 
-const buildProgram = (program: Program) => ({
+export const useUpdateProgram = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, updates }: { id: number; updates: ProgramUpdate }) =>
+      updateProgram(id, updates),
+    onSuccess: (updatedProgram, variables) => {
+      queryClient.setQueryData(['program', variables.id], updatedProgram);
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+    },
+  });
+};
+
+export const useCreateProgram = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (newProgram: ProgramInsert) =>
+      createProgram(newProgram),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+    },
+  });
+};
+
+
+// Helpers
+
+const buildProgramsColumn = (program: Program) => ({
   ...program,
   danceNames: program.programs_dances.map(pd => pd.dance.title).join(', ')
 });
