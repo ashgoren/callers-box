@@ -1,19 +1,49 @@
-import { Box } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
+import { ArrowUpward, ArrowDownward, Add, LibraryAdd, Close } from '@mui/icons-material';
 import { QueryBuilder } from 'react-querybuilder';
 import { QueryBuilderMaterial } from '@react-querybuilder/material';
-import { QueryBuilderDnD } from '@react-querybuilder/dnd';
-import * as ReactDnD from 'react-dnd';
-import * as ReactDndHtml5Backend from 'react-dnd-html5-backend';
-import * as ReactDndTouchBackend from 'react-dnd-touch-backend';
 import { OperatorSelector } from './OperatorSelector';
 import { combinators, operators, textOperators, numberOperators, booleanOperators, dateOperators } from './constants';
-import type { Field, RuleGroupType } from 'react-querybuilder';
+import type { Field, RuleGroupType, ShiftActionsProps, ActionProps } from 'react-querybuilder';
 
 type QueryBuilderComponentProps = {
   fields: Field[];
   query: RuleGroupType;
   onQueryChange: (query: RuleGroupType) => void;
 };
+
+const ShiftActions = ({ shiftUp, shiftDown, shiftUpDisabled, shiftDownDisabled }: ShiftActionsProps) => (
+  <>
+    <IconButton size='small' onClick={shiftUp} disabled={shiftUpDisabled} sx={{ p: 0.25 }}>
+      <ArrowUpward sx={{ fontSize: 16 }} />
+    </IconButton>
+    <IconButton size='small' onClick={shiftDown} disabled={shiftDownDisabled} sx={{ p: 0.25 }}>
+      <ArrowDownward sx={{ fontSize: 16 }} />
+    </IconButton>
+  </>
+);
+
+const AddRuleAction = ({ handleOnClick, disabled }: ActionProps) => (
+  <IconButton size='small' onClick={handleOnClick} disabled={disabled} sx={{ p: 0.25 }} title='Add rule'>
+    <Tooltip title='Add rule'>
+      <Add sx={{ fontSize: 18 }} />
+    </Tooltip>
+  </IconButton>
+);
+
+const AddGroupAction = ({ handleOnClick, disabled }: ActionProps) => (
+  <IconButton size='small' onClick={handleOnClick} disabled={disabled} sx={{ p: 0.25 }} title='Add group'>
+    <Tooltip title='Add group'>
+      <LibraryAdd sx={{ fontSize: 18 }} />
+    </Tooltip>
+  </IconButton>
+);
+
+const RemoveAction = ({ handleOnClick, disabled }: ActionProps) => (
+  <IconButton size='small' onClick={handleOnClick} disabled={disabled} sx={{ p: 0.25 }} title='Remove'>
+    <Close sx={{ fontSize: 16 }} />
+  </IconButton>
+);
 
 export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilderComponentProps) => {
   const styles = {
@@ -25,12 +55,12 @@ export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilde
     '& .rule-value': { width: 200, flexShrink: 0 },
     '& .ruleGroup-body': { display: 'flex', flexDirection: 'column', gap: 2, pt: 2 },
     '& .ruleGroup': { mt: 2, p: 3, borderLeft: '3px solid', borderRadius: 1 },
-    '& .ruleGroup:has(> .ruleGroup-header .ruleGroup-combinators input[value="and"])': { // AND groups
+    "& .ruleGroup:has(> .ruleGroup-header .ruleGroup-combinators input[value='and'])": { // AND groups
       // backgroundColor: alpha(theme.palette.text.primary, 0.04),
       backgroundColor: 'background.paper',
       borderColor: 'warning.main',
     },
-    '& .ruleGroup:has(> .ruleGroup-header .ruleGroup-combinators input[value="or"])': { // OR groups
+    "& .ruleGroup:has(> .ruleGroup-header .ruleGroup-combinators input[value='or'])": { // OR groups
       // backgroundColor: alpha(theme.palette.text.primary, 0.1),
       backgroundColor: 'action.hover',
       borderColor: 'info.main',
@@ -39,23 +69,30 @@ export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilde
 
   return (
     <Box sx={styles}>
-      <QueryBuilderDnD dnd={{ ...ReactDnD, ...ReactDndHtml5Backend, ...ReactDndTouchBackend }}>
-        <QueryBuilderMaterial>
-          <QueryBuilder
-            fields={fields}
-            query={query}
-            onQueryChange={onQueryChange}
-            combinators={combinators}
-            operators={operators}
-            getOperators={(field, misc) => getOperatorsForField(field, misc)}
-            getDefaultOperator={(field, misc) => getDefaultOperatorForField(field, misc)}
-            getValueEditorType={(_field, _operator, misc) => getValueEditorTypeForField(_field, _operator, misc)}
-            getValues={(_field, _operator, misc) => getValuesForField(_field, _operator, misc)}
-            context={{ query, onQueryChange }}
-            controlElements={{ operatorSelector: OperatorSelector }}
-          />
-        </QueryBuilderMaterial>
-      </QueryBuilderDnD>
+      <QueryBuilderMaterial>
+        <QueryBuilder
+          fields={fields}
+          query={query}
+          onQueryChange={onQueryChange}
+          // enableDragAndDrop
+          showShiftActions
+          combinators={combinators}
+          operators={operators}
+          getOperators={(field, misc) => getOperatorsForField(field, misc)}
+          getDefaultOperator={(field, misc) => getDefaultOperatorForField(field, misc)}
+          getValueEditorType={(_field, _operator, misc) => getValueEditorTypeForField(_field, _operator, misc)}
+          getValues={(_field, _operator, misc) => getValuesForField(_field, _operator, misc)}
+          context={{ query, onQueryChange }}
+          controlElements={{
+            operatorSelector: OperatorSelector,
+            shiftActions: ShiftActions,
+            addRuleAction: AddRuleAction,
+            addGroupAction: AddGroupAction,
+            removeRuleAction: RemoveAction,
+            removeGroupAction: RemoveAction,
+          }}
+        />
+      </QueryBuilderMaterial>
     </Box>
   )
 };

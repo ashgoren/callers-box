@@ -5,7 +5,7 @@ import { columns } from '../Programs/columns';
 import { DetailPanel } from '@/components/DetailPanel';
 import { EditPanel } from '@/components/EditPanel';
 import { useDrawerState, useDrawerActions } from '@/contexts/DrawerContext';
-import { dateToLocaleString } from '@/lib/utils';
+import { parseLocalDate } from '@/lib/utils';
 import type { ProgramUpdate } from '@/lib/types/database';
 
 export const ProgramDetails = ({ id }: { id: number }) => {
@@ -41,4 +41,4 @@ export const ProgramDetails = ({ id }: { id: number }) => {
 };
 
 const formatDate = (program: { date?: string | null }) =>
-  program.date ? dateToLocaleString(new Date(program.date)) : '';
+  program.date ? parseLocalDate(program.date) : '';

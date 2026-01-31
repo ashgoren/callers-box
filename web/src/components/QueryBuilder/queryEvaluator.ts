@@ -6,33 +6,35 @@ const evaluateRule = (row: any, rule: RuleType): boolean => {
   const value = row[field];
 
   const compareDates = (value: string, filterValue: string, operator: string): boolean => {
-    const rowDate = new Date(value).getTime();
-    const singleDate = new Date(filterValue.split(',')[0].trim()).getTime();
+    const toUTCDateString = (d: Date) => d.toISOString().split('T')[0];
+
+    const rowDate = toUTCDateString(new Date(value));
+    const filterDate = filterValue.split(',')[0].trim(); // already YYYY-MM-DD
 
     try {
       switch (operator) {
-        case '=': return rowDate === singleDate;
-        case '!=': return rowDate !== singleDate;
-        case '>': return rowDate > singleDate;
-        case '>=': return rowDate >= singleDate;
-        case '<': return rowDate < singleDate;
-        case '<=': return rowDate <= singleDate;
+        case '=': return rowDate === filterDate;
+        case '!=': return rowDate !== filterDate;
+        case '>': return rowDate > filterDate;
+        case '>=': return rowDate >= filterDate;
+        case '<': return rowDate < filterDate;
+        case '<=': return rowDate <= filterDate;
         case 'between': {
           const parts = filterValue.split(',');
-          const start = new Date(parts[0].trim()).getTime();
-          const end = parts[1] ? new Date(parts[1].trim()).getTime() : start;
+          const start = toUTCDateString(new Date(parts[0].trim()));
+          const end = parts[1] ? toUTCDateString(new Date(parts[1].trim())) : start;
           return rowDate >= start && rowDate <= end;
         }
         case 'notBetween': {
           const parts = filterValue.split(',');
-          const start = new Date(parts[0].trim()).getTime();
-          const end = parts[1] ? new Date(parts[1].trim()).getTime() : start;
+          const start = toUTCDateString(new Date(parts[0].trim()));
+          const end = parts[1] ? toUTCDateString(new Date(parts[1].trim())) : start;
           return rowDate < start || rowDate > end;
         }
         default: return false;
       }
     } catch (error) {
-      console.error('Error comparing dates:', error, { rowDate, singleDate, filterValue, operator });
+      console.error('Error comparing dates:', error);
       return false;
     }
   };
