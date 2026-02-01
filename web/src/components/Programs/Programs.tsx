@@ -22,7 +22,7 @@ export const Programs = () => {
   };
 
   const { data, error, isLoading } = usePrograms();
-  const { table, query, setQuery } = useTable(data, columns, defaultQuery, onRowClick, options);
+  const { table, query, setQuery } = useTable('programs', data, columns, defaultQuery, onRowClick, options);
 
   if (isLoading) return <Spinner />;
   if (error) return <ErrorMessage error={error} />;

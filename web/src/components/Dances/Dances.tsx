@@ -22,7 +22,7 @@ export const Dances = () => {
   };
 
   const { data, error, isLoading } = useDances();
-  const { table, query, setQuery } = useTable(data, columns, defaultQuery, onRowClick, options);
+  const { table, query, setQuery } = useTable('dances', data, columns, defaultQuery, onRowClick, options);
 
   if (isLoading) return <Spinner />;
   if (error) return <ErrorMessage error={error} />;
