@@ -1,4 +1,4 @@
-export const parseLocalDate = (dateStr: string) => {
+export const formatLocalDate = (dateStr: string) => {
   const [year, month, day] = dateStr.split('-').map(Number);
   return new Date(year, month - 1, day).toLocaleDateString('en-US', {
     year: 'numeric',

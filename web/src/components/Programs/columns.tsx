@@ -1,5 +1,5 @@
 import { CellLinkedDances } from "./CellLinkedDances";
-import { parseLocalDate } from '@/lib/utils';
+import { formatLocalDate } from '@/lib/utils';
 import type { MRT_ColumnDef } from 'material-react-table';
 import type { Program } from '@/lib/types/database';
 
@@ -25,7 +25,7 @@ export const columns: MRT_ColumnDef<Program>[] = [
     columnFilterModeOptions: ['between', 'greaterThan', 'lessThan', 'equals'],
     size: 50,
     minSize: 50,
-    Cell: ({row}) => row.original ? parseLocalDate(row.original.date!) : '',
+    Cell: ({row}) => row.original ? formatLocalDate(row.original.date!) : '',
   },
   {
     accessorKey: 'location',

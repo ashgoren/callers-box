@@ -1,3 +1,4 @@
+import { useNotify } from '@/hooks/useNotify';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getProgram, getPrograms, updateProgram, createProgram, deleteProgram } from '@/lib/api/programs'
 import type { Program, ProgramInsert, ProgramUpdate } from '@/lib/types/database';
@@ -20,6 +21,7 @@ export const useProgram = (id: number) => {
 };
 
 export const useUpdateProgram = () => {
+  const { success, error } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, updates }: { id: number; updates: ProgramUpdate }) =>
@@ -27,23 +29,35 @@ export const useUpdateProgram = () => {
     onSuccess: (updatedProgram, variables) => {
       queryClient.setQueryData(['program', variables.id], updatedProgram);
       queryClient.invalidateQueries({ queryKey: ['programs'] });
+      success('Program updated');
     },
+    onError: () => error('Error updating program')
   });
 };
 
 export const useCreateProgram = () => {
+  const { success, error } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (newProgram: ProgramInsert) => createProgram(newProgram),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['programs'] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      success('Program created');
+    },
+    onError: () => error('Error creating program')
   });
 };
 
 export const useDeleteProgram = () => {
+  const { info, error } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id }: { id: number }) => deleteProgram(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['programs'] })
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      info('Program deleted');
+    },
+    onError: () => error('Error deleting program')
   });
 };
 
