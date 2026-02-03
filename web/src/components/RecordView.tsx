@@ -7,7 +7,7 @@ import { DrawerLayout } from './DrawerLayout';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { MRT_RowData, MRT_ColumnDef } from 'material-react-table';
 
-type DetailPanelProps<TData extends MRT_RowData> = {
+type RecordViewProps<TData extends MRT_RowData> = {
   data: TData;
   columns: MRT_ColumnDef<TData>[];
   title?: string;
@@ -16,7 +16,7 @@ type DetailPanelProps<TData extends MRT_RowData> = {
   children?: React.ReactNode;
 };
 
-export const DetailPanel = <TData extends Record<string, any>>({ data, columns, title, onEdit, onDelete, children }: DetailPanelProps<TData>) => {
+export const RecordView = <TData extends Record<string, any>>({ data, columns, title, onEdit, onDelete, children }: RecordViewProps<TData>) => {
   const tableData = useMemo(() => [data], [data]); // Wrap data in an array for single row
 
   const table = useReactTable({

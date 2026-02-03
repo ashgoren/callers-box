@@ -1,8 +1,8 @@
 import { useDance, useCreateDance, useUpdateDance, useDeleteDance } from '@/hooks/useDances';
 import { Spinner, ErrorMessage } from '@/components/shared';
 import { columns, newRecord } from './config';
-import { DetailPanel } from '@/components/DetailPanel';
-import { EditPanel } from '@/components/EditPanel';
+import { RecordView } from '@/components/RecordView';
+import { RecordEdit } from '@/components/RecordEdit';
 import { RelationList } from '@/components/RelationList';
 import { useDrawerState, useDrawerActions } from '@/contexts/DrawerContext';
 import type { DanceInsert, DanceUpdate } from '@/lib/types/database';
@@ -17,11 +17,12 @@ export const DanceDetails = ({ id }: { id?: number }) => {
 
   if (mode === 'create') {
     return (
-      <EditPanel
+      <RecordEdit
         data={newRecord}
         columns={columns}
         title={'New Dance'}
         onSave={(data: DanceInsert) => createDance(data)}
+        hasPendingRelationChanges={false}
         onCancel={() => closeDrawer()}
       />
     );
@@ -33,18 +34,19 @@ export const DanceDetails = ({ id }: { id?: number }) => {
 
   if (mode === 'edit') {
     return (
-      <EditPanel
+      <RecordEdit
         data={dance}
         columns={columns}
         title={`Edit: ${dance.title}`}
         onSave={(updates: DanceUpdate) => updateDance({ id: id!, updates })}
+        hasPendingRelationChanges={false}
         onCancel={() => setMode('view')}
       />
     );
   }
 
   return (
-    <DetailPanel
+    <RecordView
       data={dance}
       columns={columns}
       title={`Dance: ${dance.title}`}
@@ -58,6 +60,6 @@ export const DanceDetails = ({ id }: { id?: number }) => {
         getRelationId={(pd) => pd.program.id}
         getRelationLabel={(pd) => `${pd.program.date} - ${pd.program.location}`}
       />
-    </DetailPanel>
+    </RecordView>
   );
 };

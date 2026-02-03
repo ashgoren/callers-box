@@ -6,17 +6,17 @@ import { DrawerLayout } from './DrawerLayout';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { MRT_RowData, MRT_ColumnDef } from 'material-react-table';
 
-type EditPanelProps<TData extends MRT_RowData> = {
+type RecordEditProps<TData extends MRT_RowData> = {
   data: Partial<TData>;
   columns: MRT_ColumnDef<TData>[];
   title?: string;
-  onSave: (updates: any) => Promise<unknown>;
+  onSave: (updates: any) => Promise<unknown>; // used for both create and update
   hasPendingRelationChanges: boolean;
   onCancel: () => void;
   children?: React.ReactNode;
 };
 
-export const EditPanel = <TData extends Record<string, any>>({ data, columns, title, onSave, hasPendingRelationChanges, onCancel, children }: EditPanelProps<TData>) => {
+export const RecordEdit = <TData extends MRT_RowData>({ data, columns, title, onSave, hasPendingRelationChanges, onCancel, children }: RecordEditProps<TData>) => {
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<TData>>({ ...data });
 
@@ -41,7 +41,7 @@ export const EditPanel = <TData extends Record<string, any>>({ data, columns, ti
     onCancel();
   };
 
-  const handleChange = (key: string, value: any) => {
+  const handleChange = (key: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
   };
 

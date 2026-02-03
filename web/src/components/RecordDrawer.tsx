@@ -10,7 +10,7 @@ const DETAIL_COMPONENTS: Record<string, React.ComponentType<{ id?: number }>> = 
   program: ProgramDetails,
 };
 
-export const DetailDrawer = () => {
+export const RecordDrawer = () => {
   const { closeDrawer } = useDrawerActions();
   const { isOpen, model, id, mode } = useDrawerState();
 

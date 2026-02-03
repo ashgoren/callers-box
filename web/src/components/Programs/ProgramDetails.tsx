@@ -4,8 +4,8 @@ import { Spinner, ErrorMessage } from '@/components/shared';
 import { columns, newRecord } from './config';
 import { useDances } from '@/hooks/useDances';
 import { useAddDanceToProgram, useRemoveDanceFromProgram } from '@/hooks/useProgramsDances';
-import { DetailPanel } from '@/components/DetailPanel';
-import { EditPanel } from '@/components/EditPanel';
+import { RecordView } from '@/components/RecordView';
+import { RecordEdit } from '@/components/RecordEdit';
 import { RelationList } from '@/components/RelationList';
 import { ProgramDancesEditor } from './ProgramDancesEditor';
 import { useDrawerState, useDrawerActions } from '@/contexts/DrawerContext';
@@ -50,7 +50,7 @@ export const ProgramDetails = ({ id }: { id?: number }) => {
 
   if (mode === 'create') {
     return (
-      <EditPanel
+      <RecordEdit
         data={newRecord}
         columns={columns}
         title={'New Program'}
@@ -67,7 +67,7 @@ export const ProgramDetails = ({ id }: { id?: number }) => {
 
   if (mode === 'edit') {
     return (
-      <EditPanel
+      <RecordEdit
         data={program}
         columns={columns}
         title={`Edit Program: ${formatDate(program)}`}
@@ -89,12 +89,12 @@ export const ProgramDetails = ({ id }: { id?: number }) => {
             }
           }}
         />
-      </EditPanel>
+      </RecordEdit>
     );
   }
 
   return (
-    <DetailPanel
+    <RecordView
       data={program}
       columns={columns}
       title={`Program: ${formatDate(program)}`}
@@ -108,7 +108,7 @@ export const ProgramDetails = ({ id }: { id?: number }) => {
         getRelationId={(pd) => pd.dance.id}
         getRelationLabel={(pd) => `${pd.order} - ${pd.dance.title}`}
       />
-    </DetailPanel>
+    </RecordView>
   );
 };
 
