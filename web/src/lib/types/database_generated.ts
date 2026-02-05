@@ -121,14 +121,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "dancesPrograms_dance_id_fkey"
+            foreignKeyName: "programs_dances_dance_id_fkey"
             columns: ["dance_id"]
             isOneToOne: false
             referencedRelation: "dances"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "dancesPrograms_program_id_fkey"
+            foreignKeyName: "programs_dances_program_id_fkey"
             columns: ["program_id"]
             isOneToOne: false
             referencedRelation: "programs"

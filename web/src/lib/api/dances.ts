@@ -6,7 +6,10 @@ export const getDances = async () => {
     .from('dances')
     .select('*, programs_dances(program:programs(*))');
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error('Error fetching dances:', error);
+    throw new Error(error.message);
+  }
   return data as Dance[];
 };
 

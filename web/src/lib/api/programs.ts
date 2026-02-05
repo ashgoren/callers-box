@@ -7,7 +7,10 @@ export const getPrograms = async () => {
     .select('*, programs_dances(order, dance:dances(*))')
     .order('order', { referencedTable: 'programs_dances', ascending: true });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    console.error('Error fetching programs:', error);
+    throw new Error(error.message);
+  }
   return data as Program[];
 };
 
