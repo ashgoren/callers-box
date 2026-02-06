@@ -4,6 +4,7 @@ import { Box, TextField, Button, Checkbox, FormControlLabel } from '@mui/materia
 import SaveIcon from '@mui/icons-material/Save';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { DrawerLayout } from './DrawerLayout';
+import { useDrawerActions, useDrawerState } from '@/contexts/DrawerContext';
 import type { ColumnDef } from '@tanstack/react-table';
 import type { MRT_RowData, MRT_ColumnDef } from 'material-react-table';
 
@@ -22,11 +23,29 @@ type RecordEditProps<TData extends MRT_RowData> = {
   title?: string;
   onSave: (updates: any) => Promise<unknown>; // used for both create and update
   hasPendingRelationChanges: boolean;
-  onCancel: () => void;
   children?: React.ReactNode;
 };
 
-export const RecordEdit = <TData extends MRT_RowData>({ data, columns, title, onSave, hasPendingRelationChanges, onCancel, children }: RecordEditProps<TData>) => {
+export const RecordEdit = <TData extends MRT_RowData>({
+  data,
+  columns,
+  title,
+  onSave,
+  hasPendingRelationChanges,
+  children
+}: RecordEditProps<TData>) => {
+  const { mode } = useDrawerState();
+  const { setMode, closeDrawer } = useDrawerActions();
+
+  // This also clears pending relation changes since the component will unmount and remount with a new record or mode
+  const navigateAway = () => {
+    if (mode === 'create') {
+      closeDrawer();
+    } else {
+      setMode('view');
+    }
+  };
+
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<TData>>({ ...data });
 
@@ -48,7 +67,7 @@ export const RecordEdit = <TData extends MRT_RowData>({ data, columns, title, on
       const confirmCancel = window.confirm('You have unsaved changes. Are you sure you want to discard them?');
       if (!confirmCancel) return;
     }
-    onCancel();
+    navigateAway();
   };
 
   const handleChange = (key: string, value: unknown) => {
@@ -70,7 +89,7 @@ export const RecordEdit = <TData extends MRT_RowData>({ data, columns, title, on
       }, {} as Partial<TData>);
 
       await onSave(cleanedData);
-      onCancel();
+      navigateAway();
     } finally {
       setSaving(false);
     }

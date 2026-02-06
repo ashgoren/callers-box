@@ -32,13 +32,13 @@ export const usePendingRelations = <TAdd>({ getIdFromAdd }: UsePendingRelationsO
       ...pendingAdds.map(item => onCommitAdd(item)),
       ...pendingRemoves.map(id => onCommitRemove(id))
     ]);
-    reset();
   };
 
-  const reset = () => {
-    setPendingAdds([]);
-    setPendingRemoves([]);
-  };
+  // A reset function isn't strictly necessary since component remounts on change of drawer mode or record
+  // const reset = () => {
+  //   setPendingAdds([]);
+  //   setPendingRemoves([]);
+  // };
 
   return {
     pendingAdds,
@@ -46,7 +46,6 @@ export const usePendingRelations = <TAdd>({ getIdFromAdd }: UsePendingRelationsO
     addItem,
     removeItem,
     commitChanges,
-    reset,
     hasPendingChanges: pendingAdds.length > 0 || pendingRemoves.length > 0
   };
 };

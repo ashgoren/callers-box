@@ -4,12 +4,11 @@ import { columns, newRecord } from './config';
 import { RecordView } from '@/components/RecordView';
 import { RecordEdit } from '@/components/RecordEdit';
 import { RelationList } from '@/components/RelationList';
-import { useDrawerState, useDrawerActions } from '@/contexts/DrawerContext';
+import { useDrawerState } from '@/contexts/DrawerContext';
 import type { DanceInsert, DanceUpdate } from '@/lib/types/database';
 
 export const Dance = ({ id }: { id?: number }) => {
   const { mode } = useDrawerState();
-  const { setMode, closeDrawer } = useDrawerActions();
   const { mutateAsync: createDance } = useCreateDance();
   const { mutateAsync: updateDance } = useUpdateDance();
   const { mutateAsync: deleteDance } = useDeleteDance();
@@ -23,7 +22,6 @@ export const Dance = ({ id }: { id?: number }) => {
         title={'New Dance'}
         onSave={(data: DanceInsert) => createDance(data)}
         hasPendingRelationChanges={false}
-        onCancel={() => closeDrawer()}
       />
     );
   }
@@ -40,7 +38,6 @@ export const Dance = ({ id }: { id?: number }) => {
         title={`Edit: ${dance.title}`}
         onSave={(updates: DanceUpdate) => updateDance({ id: id!, updates })}
         hasPendingRelationChanges={false}
-        onCancel={() => setMode('view')}
       />
     );
   }
@@ -50,7 +47,6 @@ export const Dance = ({ id }: { id?: number }) => {
       data={dance}
       columns={columns}
       title={`Dance: ${dance.title}`}
-      onEdit={() => setMode('edit')}
       onDelete={() => deleteDance({ id: id! })}
     >
       <RelationList

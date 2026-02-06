@@ -47,7 +47,10 @@ export const RecordDrawer = () => {
         sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, height: '100vh'} }}
       >
         <Box sx={{ p: 2, height: '100%' }}>
-          <DetailComponent id={id ?? undefined} />
+          <DetailComponent
+            key={`${id}-${mode}`} // Force remount when id or mode changes to reset pending adds/removes
+            id={id ?? undefined}
+          />
         </Box>
       </Drawer>
     </ClickAwayListener>

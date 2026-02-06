@@ -8,13 +8,12 @@ import { RecordView } from '@/components/RecordView';
 import { RecordEdit } from '@/components/RecordEdit';
 import { RelationList } from '@/components/RelationList';
 import { ProgramDancesEditor } from './ProgramDancesEditor';
-import { useDrawerState, useDrawerActions } from '@/contexts/DrawerContext';
+import { useDrawerState } from '@/contexts/DrawerContext';
 import { formatLocalDate } from '@/lib/utils';
 import type { ProgramInsert, ProgramUpdate } from '@/lib/types/database';
 
 export const Program = ({ id }: { id?: number }) => {
   const { mode } = useDrawerState();
-  const { setMode, closeDrawer } = useDrawerActions();
 
   const { mutateAsync: createProgram } = useCreateProgram();
   const { mutateAsync: updateProgram } = useUpdateProgram();
@@ -31,30 +30,20 @@ export const Program = ({ id }: { id?: number }) => {
     addItem,
     removeItem,
     commitChanges,
-    reset,
     hasPendingChanges
   } = usePendingRelations<{ danceId: number; order: number }>({
     getIdFromAdd: ({ danceId }) => danceId,
   });
 
   const handleSave = async (updates: ProgramUpdate) => {
-    try {
-      const { id: programId} = mode === 'create'
-        ? await createProgram(updates as ProgramInsert)
-        : await updateProgram({ id: program!.id, updates });
+    const { id: programId} = mode === 'create'
+      ? await createProgram(updates as ProgramInsert)
+      : await updateProgram({ id: program!.id, updates });
 
-      await commitChanges(
-        ({danceId, order}) => addDance({ programId, danceId, order }),
-        (danceId) => removeDance({ programId, danceId })
-      );
-    } catch (err) {
-      console.error('Error saving program:', err);
-    }
-  };
-
-  const handleCancel = () => {
-    reset();
-    setMode('view');
+    await commitChanges(
+      ({danceId, order}) => addDance({ programId, danceId, order }),
+      (danceId) => removeDance({ programId, danceId })
+    );
   };
 
   if (mode === 'create') {
@@ -65,7 +54,6 @@ export const Program = ({ id }: { id?: number }) => {
         title={'New Program'}
         onSave={handleSave}
         hasPendingRelationChanges={hasPendingChanges}
-        onCancel={() => closeDrawer()}
       >
         <ProgramDancesEditor
           programDances={[]}
@@ -91,7 +79,6 @@ export const Program = ({ id }: { id?: number }) => {
         title={`Edit Program: ${formatDate(program)}`}
         onSave={handleSave}
         hasPendingRelationChanges={hasPendingChanges}
-        onCancel={handleCancel}
       >
         <ProgramDancesEditor
           programDances={program.programs_dances}
@@ -110,7 +97,6 @@ export const Program = ({ id }: { id?: number }) => {
       data={program}
       columns={columns}
       title={`Program: ${formatDate(program)}`}
-      onEdit={() => setMode('edit')}
       onDelete={() => deleteProgram({ id: id! })}
     >
       <RelationList

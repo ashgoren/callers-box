@@ -10,12 +10,11 @@ type RecordViewProps<TData extends MRT_RowData> = {
   data: TData;
   columns: MRT_ColumnDef<TData>[];
   title?: string;
-  onEdit?: () => void;
-  onDelete?: () => void;
+  onDelete: () => void;
   children?: React.ReactNode;
 };
 
-export const RecordView = <TData extends Record<string, any>>({ data, columns, title, onEdit, onDelete, children }: RecordViewProps<TData>) => {
+export const RecordView = <TData extends Record<string, any>>({ data, columns, title, onDelete, children }: RecordViewProps<TData>) => {
   const tableData = useMemo(() => [data], [data]); // Wrap data in an array for single row
 
   // Custom cell renderer to handle MRT's Cell rendering outside of the table context
@@ -42,7 +41,7 @@ export const RecordView = <TData extends Record<string, any>>({ data, columns, t
   return (
     <DrawerLayout
       title={title || 'Details'}
-      footer={<Footer onEdit={onEdit} onDelete={onDelete} />}
+      footer={<Footer onDelete={onDelete} />}
     >
       {/* Fields */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -76,40 +75,36 @@ export const RecordView = <TData extends Record<string, any>>({ data, columns, t
   );
 };
 
-const Footer = ({ onEdit, onDelete }: { onEdit?: () => void; onDelete?: () => void }) => {
-  const { closeDrawer } = useDrawerActions();
+const Footer = ({ onDelete }: { onDelete: () => void }) => {
+  const { closeDrawer, setMode } = useDrawerActions();
 
   return (
     <>
       {/* Actions */}
-      {onEdit && (
-        <Button
-          variant='contained'
-          color='warning'
-          startIcon={<EditIcon />}
-          onClick={onEdit}
-          fullWidth
-        >
-          Edit
-        </Button>
-      )}
+      <Button
+        variant='contained'
+        color='warning'
+        startIcon={<EditIcon />}
+        onClick={() => setMode('edit')}
+        fullWidth
+      >
+        Edit
+      </Button>
 
-      {onDelete && (
-        <Button
-          variant='contained'
-          color='error'
-          onClick={() => {
-            if (confirm('Are you sure you want to delete this item?')) {
-              onDelete();
-              closeDrawer();
-            }
-          }}
-          fullWidth
-          sx={{ mt: 1 }}
-        >
-          Delete
-        </Button>
-      )}
+      <Button
+        variant='contained'
+        color='error'
+        onClick={() => {
+          if (confirm('Are you sure you want to delete this item?')) {
+            onDelete();
+            closeDrawer();
+          }
+        }}
+        fullWidth
+        sx={{ mt: 1 }}
+      >
+        Delete
+      </Button>
     </>
   );
 };
