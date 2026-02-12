@@ -32,7 +32,7 @@ export const Program = ({ id }: { id?: number }) => {
     commitChanges,
     hasPendingChanges
   } = usePendingRelations<{ danceId: number; order: number }>({
-    getIdFromAdd: ({ danceId }) => danceId,
+    getId: ({ danceId }) => danceId,
   });
 
   const handleSave = async (updates: ProgramUpdate) => {

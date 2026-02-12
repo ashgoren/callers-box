@@ -45,7 +45,7 @@ export const ProgramDancesEditor = ({ programDances, dances, pendingAdds, pendin
   };
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', mt: 2 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', mt: 4 }}>
       <Typography variant='caption' color='text.secondary'>
         Dances
       </Typography>
@@ -97,7 +97,6 @@ export const ProgramDancesEditor = ({ programDances, dances, pendingAdds, pendin
     </Box>
   );
 };
-
 
 const computeDisplayedRelations = ({ programDances, dances, pendingAdds, pendingRemoves }: {
   programDances: Program['programs_dances'],

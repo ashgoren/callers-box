@@ -5,7 +5,7 @@ import type { Database } from './database_generated';
 
 type Tables = Database['public']['Tables'];
 
-export type Model = 'dance' | 'program';
+export type Model = 'dance' | 'program' | 'choreographer';
 
 export type DanceRow = Tables['dances']['Row'];
 export type Dance = DanceRow & {

@@ -25,20 +25,26 @@ export const getDance = async (id: number) => {
 };
 
 export const updateDance = async (id: number, updates: DanceUpdate) => {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('dances')
     .update(updates)
-    .eq('id', id);
+    .eq('id', id)
+    .select('*, programs_dances(program:programs(*)), dances_choreographers(choreographer:choreographers(*))')
+    .single();
 
   if (error) throw new Error(error.message);
+  return data as Dance;
 };
 
 export const createDance = async (newDance: DanceInsert) => {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('dances')
-    .insert(newDance);
+    .insert(newDance)
+    .select('*, programs_dances(program:programs(*)), dances_choreographers(choreographer:choreographers(*))')
+    .single();
 
   if (error) throw new Error(error.message);
+  return data as Dance;
 };
 
 export const deleteDance = async (id: number) => {

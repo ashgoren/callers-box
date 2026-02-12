@@ -1,24 +1,24 @@
 import { useState } from 'react';
 
-type UsePendingRelationsOptions<TAdd> = {
-  getIdFromAdd: (add: TAdd) => number;
-};
-
-export const usePendingRelations = <TAdd>({ getIdFromAdd }: UsePendingRelationsOptions<TAdd>) => {
+export const usePendingRelations = <TAdd = number>(
+  options?: { getId?: (item: TAdd) => number }
+) => {
   const [pendingAdds, setPendingAdds] = useState<TAdd[]>([]);
   const [pendingRemoves, setPendingRemoves] = useState<number[]>([]);
 
+  const getId = options?.getId ?? (item => item as number);
+
   const addItem = (item: TAdd) => {
-    if (pendingRemoves.includes(getIdFromAdd(item))) {
-      setPendingRemoves(prev => prev.filter(id => id !== getIdFromAdd(item)));
+    if (pendingRemoves.includes(getId(item))) {
+      setPendingRemoves(prev => prev.filter(id => id !== getId(item)));
     } else {
       setPendingAdds(prev => [...prev, item]);
     }
   };
 
   const removeItem = (id: number) => {
-    if (pendingAdds.some(item => getIdFromAdd(item) === id)) {
-      setPendingAdds(prev => prev.filter(item => getIdFromAdd(item) !== id));
+    if (pendingAdds.some(item => getId(item) === id)) {
+      setPendingAdds(prev => prev.filter(item => getId(item) !== id));
     } else {
       setPendingRemoves(prev => [...prev, id]);
     }
