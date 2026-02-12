@@ -10,6 +10,7 @@ import { BrowserRouter, Routes, Route } from 'react-router';
 import { Layout } from './components/layouts/Layout';
 import { Dances } from './components/Dances';
 import { Programs } from './components/Programs';
+import { Choreographers } from './components/Choreographers';
 import { Home } from './components/Home';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
                     <Route path='/' element={<Home />} />
                     <Route path='/dances' element={<Dances />} />
                     <Route path='/programs' element={<Programs />} />
+                    <Route path='/choreographers' element={<Choreographers />} />
                   </Routes>
                 </Layout>
               </DrawerProvider>

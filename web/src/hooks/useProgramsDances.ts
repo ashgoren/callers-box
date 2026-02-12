@@ -11,7 +11,7 @@ export const useAddDanceToProgram = () => {
     onSuccess: (_, { programId, danceId }) => {
       queryClient.invalidateQueries({ queryKey: ['program', programId] });
       queryClient.invalidateQueries({ queryKey: ['programs'] });
-      queryClient.invalidateQueries({ queryKey: ['dances', danceId] });
+      queryClient.invalidateQueries({ queryKey: ['dance', danceId] });
       queryClient.invalidateQueries({ queryKey: ['dances'] });
       // success('Dance added to program');
     },
@@ -28,7 +28,7 @@ export const useRemoveDanceFromProgram = () => {
     onSuccess: (_, { programId, danceId }) => {
       queryClient.invalidateQueries({ queryKey: ['program', programId] });
       queryClient.invalidateQueries({ queryKey: ['programs'] });
-      queryClient.invalidateQueries({ queryKey: ['dances', danceId] });
+      queryClient.invalidateQueries({ queryKey: ['dance', danceId] });
       queryClient.invalidateQueries({ queryKey: ['dances'] });
       // info('Dance removed from program');
     },

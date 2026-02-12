@@ -21,6 +21,6 @@ export type ProgramInsert = Tables['programs']['Insert'];
 export type ProgramUpdate = Tables['programs']['Update'];
 
 export type ChoreographerRow = Tables['choreographers']['Row'];
-export type Choreographer = ChoreographerRow;
+export type Choreographer = ChoreographerRow & { dances_choreographers: { dance: DanceRow }[] };
 export type ChoreographerInsert = Tables['choreographers']['Insert'];
 export type ChoreographerUpdate = Tables['choreographers']['Update'];

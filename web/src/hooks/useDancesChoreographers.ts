@@ -11,6 +11,8 @@ export const useAddChoreographerToDance = () => {
     onSuccess: (_, { danceId }) => {
       queryClient.invalidateQueries({ queryKey: ['dance', danceId] });
       queryClient.invalidateQueries({ queryKey: ['dances'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographers'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographer'] });
       // success('Choreographer added to dance');
     },
     onError: (err: Error) => error(err.message || 'Error adding choreographer to dance')
@@ -26,6 +28,8 @@ export const useRemoveChoreographerFromDance = () => {
     onSuccess: (_, { danceId }) => {
       queryClient.invalidateQueries({ queryKey: ['dance', danceId] });
       queryClient.invalidateQueries({ queryKey: ['dances'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographers'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographer'] });
       // info('Choreographer removed from dance');
     },
     onError: (err: Error) => error(err.message || 'Error removing choreographer from dance')

@@ -9,7 +9,6 @@ import '@tanstack/react-table';
 
 export const newRecord: DanceInsert = {
   title: '',
-  choreographer: '',
   difficulty: null,
   notes: '',
   place_in_program: '',
@@ -38,10 +37,17 @@ export const columns: MRT_ColumnDef<Dance>[] = [
     minSize: 55,
   },
   {
-    accessorKey: 'choreographer',
-    header: 'Choreographer',
+    id: 'choreographers',
+    header: '🔗 Choreographers',
+    enableColumnFilter: false,
     size: 200,
     minSize: 170,
+    Cell: ({ row }) => <RelationCell
+      items={row.original.dances_choreographers}
+      model='choreographer'
+      getId={(joinRow) => joinRow.choreographer.id}
+      getLabel={(joinRow) => joinRow.choreographer.name}
+    />
   },
   {
     accessorKey: 'difficulty',
@@ -136,7 +142,7 @@ export const tableInitialState = {
 
 export const queryFields = [
   { name: 'title', label: 'Title', inputType: 'string' },
-  { name: 'choreographer', label: 'Choreographer', inputType: 'string' },
+  { name: 'choreographerNames', label: 'Choreographers', inputType: 'string' },
   { name: 'difficulty', label: 'Difficulty', inputType: 'number' },
   { name: 'notes', label: 'Notes', inputType: 'string' },
   { name: 'place_in_program', label: 'Place in Program', inputType: 'string' },

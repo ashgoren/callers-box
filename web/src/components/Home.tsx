@@ -19,6 +19,9 @@ export const Home = () => {
         <ListItem>
           <Link component={RouterLink} to="/programs">Programs</Link>
         </ListItem>
+        <ListItem>
+          <Link component={RouterLink} to="/choreographers">Choreographers</Link>
+        </ListItem>
       </List>
     </>
   );

@@ -54,7 +54,6 @@ export type Database = {
       }
       dances: {
         Row: {
-          choreographer: string | null
           created_at: string
           difficulty: number | null
           id: number
@@ -67,7 +66,6 @@ export type Database = {
           video: string | null
         }
         Insert: {
-          choreographer?: string | null
           created_at?: string
           difficulty?: number | null
           id?: number
@@ -80,7 +78,6 @@ export type Database = {
           video?: string | null
         }
         Update: {
-          choreographer?: string | null
           created_at?: string
           difficulty?: number | null
           id?: number

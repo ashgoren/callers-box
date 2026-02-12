@@ -29,6 +29,8 @@ export const useUpdateProgram = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['program', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['programs'] });
+      queryClient.invalidateQueries({ queryKey: ['dances'] });
+      queryClient.invalidateQueries({ queryKey: ['dance'] });
       success('Program updated');
     },
     onError: (err: Error) => error(err.message || 'Error updating program')
@@ -55,6 +57,8 @@ export const useDeleteProgram = () => {
     mutationFn: ({ id }: { id: number }) => deleteProgram(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['programs'] });
+      queryClient.invalidateQueries({ queryKey: ['dances'] });
+      queryClient.invalidateQueries({ queryKey: ['dance'] });
       info('Program deleted');
     },
     onError: (err: Error) => error(err.message || 'Error deleting program')

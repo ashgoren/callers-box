@@ -29,6 +29,10 @@ export const useUpdateDance = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['dance', variables.id] });
       queryClient.invalidateQueries({ queryKey: ['dances'] });
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      queryClient.invalidateQueries({ queryKey: ['program'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographers'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographer'] });
       success('Dance updated');
     },
     onError: (err: Error) => error(err.message || 'Error updating dance')
@@ -55,6 +59,10 @@ export const useDeleteDance = () => {
     mutationFn: ({ id }: { id: number }) => deleteDance(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['dances'] });
+      queryClient.invalidateQueries({ queryKey: ['programs'] });
+      queryClient.invalidateQueries({ queryKey: ['program'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographers'] });
+      queryClient.invalidateQueries({ queryKey: ['choreographer'] });
       info('Dance deleted');
     },
     onError: (err: Error) => error(err.message || 'Error deleting dance')

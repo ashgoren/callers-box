@@ -4,7 +4,8 @@ import type { Choreographer, ChoreographerInsert, ChoreographerUpdate } from '@/
 export const getChoreographers = async () => {
   const { data, error } = await supabase
     .from('choreographers')
-    .select('*');
+    .select('*, dances_choreographers(dance:dances(*))')
+    .order('name', { ascending: true });
 
   if (error) {
     console.error('Error fetching choreographers:', error);
@@ -16,7 +17,7 @@ export const getChoreographers = async () => {
 export const getChoreographer = async (id: number) => {
   const { data, error } = await supabase
     .from('choreographers')
-    .select('*')
+    .select('*, dances_choreographers(dance:dances(*))')
     .eq('id', id)
     .single();
 
@@ -29,7 +30,7 @@ export const updateChoreographer = async (id: number, updates: ChoreographerUpda
     .from('choreographers')
     .update(updates)
     .eq('id', id)
-    .select('*')
+    .select('*, dances_choreographers(dance:dances(*))')
     .single();
 
   if (error) throw new Error(error.message);
@@ -40,7 +41,7 @@ export const createChoreographer = async (newChoreographer: ChoreographerInsert)
   const { data, error } = await supabase
     .from('choreographers')
     .insert(newChoreographer)
-    .select('*')
+    .select('*, dances_choreographers(dance:dances(*))')
     .single();
 
   if (error) throw new Error(error.message);
