@@ -9,6 +9,7 @@ import { RecordView } from '@/components/RecordView';
 import { RecordEdit } from '@/components/RecordEdit';
 import { RelationList } from '@/components/RelationList';
 import { useDrawerState } from '@/contexts/DrawerContext';
+import { useUndoActions } from '@/contexts/UndoContext';
 import type { DanceInsert, DanceUpdate, Dance as DanceType } from '@/lib/types/database';
 
 export const Dance = ({ id }: { id?: number }) => {
@@ -24,16 +25,70 @@ export const Dance = ({ id }: { id?: number }) => {
   const { data: choreographers } = useChoreographers();
 
   const pending = usePendingRelations();
+  const { pushAction } = useUndoActions();
 
   const handleSave = async (updates: DanceUpdate) => {
     const { id: danceId } = mode === 'create'
       ? await createDance(updates as DanceInsert)
       : await updateDance({ id: dance!.id, updates });
 
-    await pending.commitChanges(
+    const { added, removed } = await pending.commitChanges(
       (choreographerId) => addChoreographer({ danceId, choreographerId }),
       (choreographerId) => removeChoreographer({ danceId, choreographerId })
     );
+
+    if (mode === 'create') {
+      pushAction({
+        label: `Create Dance: ${updates.title}`,
+        ops: [
+          { type: 'insert', table: 'dances', record: { id: danceId, ...updates } },
+          ...added.map(row => (
+            { type: 'insert' as const, table: 'dances_choreographers', record: row }
+           ))
+        ]
+      });
+    }
+
+    if (mode === 'edit') {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { programs_dances, dances_choreographers, ...before } = dance!;
+      pushAction({
+        label: `Edit Dance: ${updates.title}`,
+        ops: [
+          { type: 'update', table: 'dances', id: danceId, before, after: updates },
+          ...added.map(row => (
+            { type: 'insert' as const, table: 'dances_choreographers', record: row }
+          )),
+          ...removed.map(row => (
+            { type: 'delete' as const, table: 'dances_choreographers', id: row.id, record: row }
+          ))
+        ]
+      });
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!dance) return;
+    const { programs_dances, dances_choreographers, ...danceRecord } = dance;
+    await deleteDance({ id: dance.id });
+    pushAction({
+      label: `Delete Dance: ${dance.title}`,
+      ops: [
+        { type: 'delete' as const, table: 'dances', id: dance.id, record: danceRecord },
+        ...dances_choreographers.map(dc => ({
+          type: 'delete' as const,
+          table: 'dances_choreographers',
+          id: dc.id,
+          record: { id: dc.id, dance_id: dance.id, choreographer_id: dc.choreographer.id }
+        })),
+        ...programs_dances.map(pd => ({
+          type: 'delete' as const,
+          table: 'programs_dances',
+          id: pd.id,
+          record: { id: pd.id, dance_id: dance.id, program_id: pd.program.id, order: pd.order }
+        }))
+      ]
+    });
   };
 
   if (mode === 'create') {
@@ -93,7 +148,7 @@ export const Dance = ({ id }: { id?: number }) => {
       data={dance}
       columns={columns}
       title={`Dance: ${dance.title}`}
-      onDelete={() => deleteDance({ id: id! })}
+      onDelete={handleDelete}
     >
       <RelationList
         model='program'

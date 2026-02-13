@@ -9,8 +9,8 @@ export type Model = 'dance' | 'program' | 'choreographer';
 
 export type DanceRow = Tables['dances']['Row'];
 export type Dance = DanceRow & {
-  programs_dances: { program: ProgramRow }[],
-  dances_choreographers: { choreographer: ChoreographerRow }[]
+  programs_dances: { id: number; order: number; program: ProgramRow }[],
+  dances_choreographers: { id: number; choreographer: ChoreographerRow }[]
 };
 export type DanceInsert = Tables['dances']['Insert'];
 export type DanceUpdate = Tables['dances']['Update'];

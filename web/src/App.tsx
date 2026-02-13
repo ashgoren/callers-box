@@ -6,6 +6,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './lib/react-query';
 import { TitleProvider } from './contexts/TitleContext';
 import { DrawerProvider } from '@/contexts/DrawerContext';
+import { UndoProvider } from '@/contexts/UndoContext';
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { Layout } from './components/layouts/Layout';
 import { Dances } from './components/Dances';
@@ -19,18 +20,20 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <DndProvider backend={HTML5Backend}>
           <QueryClientProvider client={queryClient}>
-            <TitleProvider>
-              <DrawerProvider>
-                <Layout>
-                  <Routes>
-                    <Route path='/' element={<Home />} />
-                    <Route path='/dances' element={<Dances />} />
-                    <Route path='/programs' element={<Programs />} />
-                    <Route path='/choreographers' element={<Choreographers />} />
-                  </Routes>
-                </Layout>
-              </DrawerProvider>
-            </TitleProvider>
+            <UndoProvider>
+              <TitleProvider>
+                <DrawerProvider>
+                  <Layout>
+                    <Routes>
+                      <Route path='/' element={<Home />} />
+                      <Route path='/dances' element={<Dances />} />
+                      <Route path='/programs' element={<Programs />} />
+                      <Route path='/choreographers' element={<Choreographers />} />
+                    </Routes>
+                  </Layout>
+                </DrawerProvider>
+              </TitleProvider>
+            </UndoProvider>
           </QueryClientProvider>
         </DndProvider>
       </LocalizationProvider>

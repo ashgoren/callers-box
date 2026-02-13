@@ -24,14 +24,15 @@ export const usePendingRelations = <TAdd = number>(
     }
   };
 
-  const commitChanges = async (
-    onCommitAdd: (item: TAdd) => Promise<void>,
-    onCommitRemove: (id: number) => Promise<void>
+  const commitChanges = async <TResult>(
+    onCommitAdd: (item: TAdd) => Promise<TResult>,
+    onCommitRemove: (id: number) => Promise<TResult>
   ) => {
-    await Promise.all([
-      ...pendingAdds.map(item => onCommitAdd(item)),
-      ...pendingRemoves.map(id => onCommitRemove(id))
+    const [added, removed] = await Promise.all([
+      Promise.all(pendingAdds.map(item => onCommitAdd(item))),
+      Promise.all(pendingRemoves.map(id => onCommitRemove(id)))
     ]);
+    return { added, removed };
   };
 
   // A reset function isn't strictly necessary since component remounts on change of drawer mode or record

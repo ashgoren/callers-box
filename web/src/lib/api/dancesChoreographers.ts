@@ -1,19 +1,25 @@
 import { supabase } from '@/lib/supabase'
 
 export const addChoreographerToDance = async (danceId: number, choreographerId: number) => {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('dances_choreographers')
     .insert({ dance_id: danceId, choreographer_id: choreographerId })
+    .select()
+    .single()
 
   if (error) throw new Error(error.message);
+  return data;
 };
 
 export const removeChoreographerFromDance = async (danceId: number, choreographerId: number) => {
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('dances_choreographers')
     .delete()
     .eq('dance_id', danceId)
     .eq('choreographer_id', choreographerId)
+    .select()
+    .single()
 
   if (error) throw new Error(error.message);
+  return data;
 };
