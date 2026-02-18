@@ -45,7 +45,7 @@ export type Database = {
           created_at?: string
           id?: number
           name: string
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -79,7 +79,7 @@ export type Database = {
           swing_16?: boolean | null
           title: string
           url?: string | null
-          user_id: string
+          user_id?: string
           video?: string | null
         }
         Update: {
@@ -99,21 +99,21 @@ export type Database = {
       }
       dances_choreographers: {
         Row: {
-          choreographer_id: number | null
+          choreographer_id: number
           created_at: string
-          dance_id: number | null
+          dance_id: number
           id: number
         }
         Insert: {
-          choreographer_id?: number | null
+          choreographer_id: number
           created_at?: string
-          dance_id?: number | null
+          dance_id: number
           id?: number
         }
         Update: {
-          choreographer_id?: number | null
+          choreographer_id?: number
           created_at?: string
-          dance_id?: number | null
+          dance_id?: number
           id?: number
         }
         Relationships: [
@@ -146,7 +146,7 @@ export type Database = {
           date?: string | null
           id?: number
           location?: string | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           created_at?: string
@@ -162,22 +162,22 @@ export type Database = {
           created_at: string
           dance_id: number
           id: number
-          order: number | null
-          program_id: number | null
+          order: number
+          program_id: number
         }
         Insert: {
           created_at?: string
           dance_id: number
           id?: number
-          order?: number | null
-          program_id?: number | null
+          order: number
+          program_id: number
         }
         Update: {
           created_at?: string
           dance_id?: number
           id?: number
-          order?: number | null
-          program_id?: number | null
+          order?: number
+          program_id?: number
         }
         Relationships: [
           {

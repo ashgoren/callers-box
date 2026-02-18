@@ -18,15 +18,15 @@ import { SignInPage } from '@/components/auth/SignInPage';
 import { useAuth } from '@/contexts/AuthContext';
 import { logEnvironment } from './lib/utils';
 
+const ProtectedRoute = () => {
+  const { user, authLoading } = useAuth();
+  if (authLoading) return <Spinner />;
+  if (!user) return <Navigate to='/signin' />;
+  return <Outlet />;
+};
+
 function App() {
   logEnvironment();
-
-  const ProtectedRoute = () => {
-    const { user, authLoading } = useAuth();
-    if (authLoading) return <Spinner />;
-    if (!user) return <Navigate to='/signin' />;
-    return <Outlet />;
-  };
 
   return (
     <BrowserRouter>

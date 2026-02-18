@@ -76,7 +76,7 @@ export const SignInPage = () => {
             }}
           />
 
-          <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} disabled={loading || !email || !password}>
+          <Button type='submit' fullWidth variant='contained' sx={{ mt: 3, mb: 2 }} disabled={loading}>
             Sign In
           </Button>
 

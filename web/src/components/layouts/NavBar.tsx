@@ -90,7 +90,11 @@ export const NavBar = () => {
 
           {user && (
             <>
-              <Button color='inherit' onClick={handleToggleAccountMenu}>
+              <Button
+                color='inherit'
+                onClick={handleToggleAccountMenu}
+                sx={{ textTransform: 'none' }}
+              >
                 {user.email?.split('@')[0]}
               </Button>
               <Menu anchorEl={accountMenuAnchorEl} open={accountMenuOpen} onClose={handleToggleAccountMenu}>
