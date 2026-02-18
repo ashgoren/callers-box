@@ -24,6 +24,7 @@ type UndoState = {
 
 type UndoActions = {
   pushAction: (action: UndoAction) => void;
+  clearStacks: () => void;
   undo: () => Promise<void>;
   redo: () => Promise<void>;
 };
@@ -116,6 +117,11 @@ export const UndoProvider = ({ children }: { children: ReactNode }) => {
     setRedoStack([]);
   }, []);
 
+  const clearStacks = useCallback(() => {
+    setUndoStack([]);
+    setRedoStack([]);
+  }, []);
+
   const undo = useCallback(async () => {
     const action = undoStackRef.current.at(-1);
     if (!action) return;
@@ -152,7 +158,7 @@ export const UndoProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const actions = useMemo(() => ({ pushAction, undo, redo }), [pushAction, undo, redo]);
+  const actions = useMemo(() => ({ pushAction, undo, redo, clearStacks }), [pushAction, undo, redo, clearStacks]);
 
   return (
     <UndoActionsContext.Provider value={actions}>

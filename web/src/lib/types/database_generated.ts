@@ -39,16 +39,19 @@ export type Database = {
           created_at: string
           id: number
           name: string
+          user_id: string
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
+          user_id: string
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -63,6 +66,7 @@ export type Database = {
           swing_16: boolean | null
           title: string
           url: string | null
+          user_id: string
           video: string | null
         }
         Insert: {
@@ -75,6 +79,7 @@ export type Database = {
           swing_16?: boolean | null
           title: string
           url?: string | null
+          user_id: string
           video?: string | null
         }
         Update: {
@@ -87,6 +92,7 @@ export type Database = {
           swing_16?: boolean | null
           title?: string
           url?: string | null
+          user_id?: string
           video?: string | null
         }
         Relationships: []
@@ -133,18 +139,21 @@ export type Database = {
           date: string | null
           id: number
           location: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
           date?: string | null
           id?: number
           location?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
           date?: string | null
           id?: number
           location?: string | null
+          user_id?: string
         }
         Relationships: []
       }

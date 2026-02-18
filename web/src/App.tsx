@@ -7,14 +7,27 @@ import { queryClient } from './lib/react-query';
 import { TitleProvider } from './contexts/TitleContext';
 import { DrawerProvider } from '@/contexts/DrawerContext';
 import { UndoProvider } from '@/contexts/UndoContext';
-import { BrowserRouter, Routes, Route } from 'react-router';
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router';
 import { Layout } from './components/layouts/Layout';
 import { Dances } from './components/Dances';
 import { Programs } from './components/Programs';
 import { Choreographers } from './components/Choreographers';
 import { Home } from './components/Home';
+import { Spinner } from '@/components/shared';
+import { SignInPage } from '@/components/auth/SignInPage';
+import { useAuth } from '@/contexts/AuthContext';
+import { logEnvironment } from './lib/utils';
 
 function App() {
+  logEnvironment();
+
+  const ProtectedRoute = () => {
+    const { user, authLoading } = useAuth();
+    if (authLoading) return <Spinner />;
+    if (!user) return <Navigate to='/signin' />;
+    return <Outlet />;
+  };
+
   return (
     <BrowserRouter>
       <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -25,10 +38,13 @@ function App() {
                 <TitleProvider>
                   <Layout>
                     <Routes>
-                      <Route path='/' element={<Home />} />
-                      <Route path='/dances' element={<Dances />} />
-                      <Route path='/programs' element={<Programs />} />
-                      <Route path='/choreographers' element={<Choreographers />} />
+                      <Route path='/signin' element={<SignInPage />} />
+                      <Route element={<ProtectedRoute />}>
+                        <Route path='/' element={<Home />} />
+                        <Route path='/dances' element={<Dances />} />
+                        <Route path='/programs' element={<Programs />} />
+                        <Route path='/choreographers' element={<Choreographers />} />
+                      </Route>
                     </Routes>
                   </Layout>
                 </TitleProvider>
