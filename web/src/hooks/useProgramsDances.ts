@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addDanceToProgram, removeDanceFromProgram } from '@/lib/api/programsDances';
 
 export const useAddDanceToProgram = () => {
-  const { error } = useNotify();
+  const { toastError } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ programId, danceId, order }: { programId: number; danceId: number; order: number }) =>
@@ -15,12 +15,12 @@ export const useAddDanceToProgram = () => {
       queryClient.invalidateQueries({ queryKey: ['dances'] });
       // success('Dance added to program');
     },
-    onError: (err: Error) => error(err.message || 'Error adding dance to program')
+    onError: (err: Error) => toastError(err.message || 'Error adding dance to program')
   });
 };
 
 export const useRemoveDanceFromProgram = () => {
-  const { error } = useNotify();
+  const { toastError } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ programId, danceId }: { programId: number; danceId: number }) =>
@@ -32,12 +32,12 @@ export const useRemoveDanceFromProgram = () => {
       queryClient.invalidateQueries({ queryKey: ['dances'] });
       // success('Dance removed from program');
     },
-    onError: (err: Error) => error(err.message || 'Error removing dance from program')
+    onError: (err: Error) => toastError(err.message || 'Error removing dance from program')
   });
 };
 
 // export const useUpdateDanceOrderInProgram = () => {
-//   const { success, error } = useNotify();
+//   const { success, toastError } = useNotify();
 //   const queryClient = useQueryClient();
 //   return useMutation({
 //     mutationFn: ({ programId, danceId, order }: { programId: number; danceId: number; order: number }) =>
@@ -47,12 +47,12 @@ export const useRemoveDanceFromProgram = () => {
 //       queryClient.invalidateQueries({ queryKey: ['programs'] });
 //       success('Dance order updated');
 //     },
-//     onError: (err: Error) => error(err.message || 'Error updating dance order')
+//     onError: (err: Error) => toastError(err.message || 'Error updating dance order')
 //   });
 // };
 
 // export const useReorderDancesInProgram = () => {
-//   const { error } = useNotify();
+//   const { toastError } = useNotify();
 //   const queryClient = useQueryClient();
 //   return useMutation({
 //     mutationFn: ({ programId, orderedDanceIds }: { programId: number; orderedDanceIds: number[] }) =>
@@ -61,6 +61,6 @@ export const useRemoveDanceFromProgram = () => {
 //       queryClient.invalidateQueries({ queryKey: ['program', programId] });
 //       queryClient.invalidateQueries({ queryKey: ['programs'] });
 //     },
-//     onError: (err: Error) => error(err.message || 'Failed to reorder dances'),
+//     onError: (err: Error) => toastError(err.message || 'Failed to reorder dances'),
 //   });
 // };

@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { addChoreographerToDance, removeChoreographerFromDance } from '@/lib/api/dancesChoreographers';
 
 export const useAddChoreographerToDance = () => {
-  const { error } = useNotify();
+  const { toastError } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ danceId, choreographerId }: { danceId: number; choreographerId: number }) =>
@@ -15,12 +15,12 @@ export const useAddChoreographerToDance = () => {
       queryClient.invalidateQueries({ queryKey: ['choreographer'] });
       // success('Choreographer added to dance');
     },
-    onError: (err: Error) => error(err.message || 'Error adding choreographer to dance')
+    onError: (err: Error) => toastError(err.message || 'Error adding choreographer to dance')
   });
 };
 
 export const useRemoveChoreographerFromDance = () => {
-  const { error } = useNotify();
+  const { toastError } = useNotify();
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ danceId, choreographerId }: { danceId: number; choreographerId: number }) =>
@@ -32,6 +32,6 @@ export const useRemoveChoreographerFromDance = () => {
       queryClient.invalidateQueries({ queryKey: ['choreographer'] });
       // success('Choreographer removed from dance');
     },
-    onError: (err: Error) => error(err.message || 'Error removing choreographer from dance')
+    onError: (err: Error) => toastError(err.message || 'Error removing choreographer from dance')
   });
 };
