@@ -7,7 +7,7 @@ export const FilterButton = ({ onClick, activeRuleCount }: {
   activeRuleCount: number;
 }) => (
   <Button
-    sx={{ mb: 2 }}
+    sx={{ mb: 1 }}
     onClick={onClick}
     variant={activeRuleCount ? 'contained' : 'outlined'}
     color='secondary'

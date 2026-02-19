@@ -9,13 +9,26 @@ import type { RuleGroupType } from 'react-querybuilder';
 import type { Dispatch, SetStateAction } from 'react';
 import type { Model } from '@/lib/types/database';
 
-export const TableControls = ({ model, query, setFilterOpen }: {
+export const TableControls = ({ model, query, setFilterOpen, onClearFilters }: {
   model: Model;
   query: RuleGroupType;
   setFilterOpen: Dispatch<SetStateAction<boolean>>;
+  onClearFilters: () => void;
 }) => {
   const confirm = useConfirm();
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
+
+  const handleClearFilters = async () => {
+    setMenuAnchor(null);
+    const { confirmed } = await confirm({
+      title: 'Clear filters',
+      description: <>Are you sure you want to clear all filters?<br /><strong>This action cannot be undone.</strong></>,
+      confirmationText: 'Clear',
+      cancellationText: 'Cancel',
+    });
+    if (!confirmed) return;
+    onClearFilters();
+  };
 
   const handleClearState = async () => {
     setMenuAnchor(null);
@@ -42,9 +55,8 @@ export const TableControls = ({ model, query, setFilterOpen }: {
       </IconButton>
 
       <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
-        <MenuItem onClick={handleClearState}>
-          Clear all state
-        </MenuItem>
+        <MenuItem onClick={handleClearFilters}>Clear filters</MenuItem>
+        <MenuItem onClick={handleClearState}>Clear all state</MenuItem>
       </Menu>
     </Box>
   );

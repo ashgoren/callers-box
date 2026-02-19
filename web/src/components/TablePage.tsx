@@ -38,6 +38,11 @@ export const TablePage = <TData extends MRT_RowData & { id: number }>({ model, u
 
   const [filterOpen, setFilterOpen] = useState(countActiveRules(query.rules) > 0);
 
+  const onClearFilters = () => {
+    setQuery(defaultQuery);
+    setFilterOpen(false);
+  };
+
   if (isLoading) return <Spinner />;
   if (error) return <ErrorMessage error={error} />;
 
@@ -47,6 +52,7 @@ export const TablePage = <TData extends MRT_RowData & { id: number }>({ model, u
         model={model}
         query={query}
         setFilterOpen={setFilterOpen}
+        onClearFilters={onClearFilters}
       />
 
       <QueryBuilderComponent

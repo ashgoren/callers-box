@@ -3,7 +3,7 @@ import { Box, ToggleButton, ToggleButtonGroup } from '@mui/material';
 type QueryMode = 'visual' | 'sql';
 
 export const ModeToggle = ({ mode, handleModeChange }: { mode: QueryMode; handleModeChange: (mode: QueryMode) => void }) => (
-  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+  <Box>
     <ToggleButtonGroup
       size='small'
       value={mode}

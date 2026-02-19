@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 import { Box, IconButton, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
-import { Add, LibraryAdd, Close } from '@mui/icons-material';
+import { Add, CreateNewFolder, Close } from '@mui/icons-material';
 import { QueryBuilder } from 'react-querybuilder';
 import { QueryBuilderDnD } from '@react-querybuilder/dnd';
 import * as ReactDnD from 'react-dnd';
 import * as ReactDndHtml5Backend from 'react-dnd-html5-backend';
 import * as ReactDndTouchBackend from 'react-dnd-touch-backend';
-import { QueryBuilderMaterial } from '@react-querybuilder/material';
-import { OperatorSelector } from './OperatorSelector';
+import { MaterialValueEditor, QueryBuilderMaterial } from '@react-querybuilder/material';
+import { DatePicker } from '@mui/x-date-pickers';
+import { format, parseISO } from 'date-fns';
 import { operators, textOperators, numberOperators, booleanOperators, dateOperators } from './constants';
-import type { Field, RuleGroupType, ActionProps, CombinatorSelectorProps } from 'react-querybuilder';
+import type { Field, RuleGroupType, ActionProps, CombinatorSelectorProps, ValueEditorProps } from 'react-querybuilder';
 
 type QueryBuilderComponentProps = {
   fields: Field[];
@@ -40,7 +41,7 @@ const AddRuleAction = ({ handleOnClick, disabled }: ActionProps) => (
 const AddGroupAction = ({ handleOnClick, disabled }: ActionProps) => (
   <IconButton size='small' onClick={handleOnClick} disabled={disabled} sx={{ p: 0.25 }} title='Add group'>
     <Tooltip title='Add group'>
-      <LibraryAdd sx={{ fontSize: 18 }} />
+      <CreateNewFolder sx={{ fontSize: 18 }} />
     </Tooltip>
   </IconButton>
 );
@@ -50,6 +51,20 @@ const RemoveAction = ({ handleOnClick, disabled }: ActionProps) => (
     <Close sx={{ fontSize: 16 }} />
   </IconButton>
 );
+
+const ValueEditor = (props: ValueEditorProps) => {
+  if (props.inputType === 'date') {
+    return (
+      <DatePicker
+        value={props.value ? parseISO(props.value) : null}
+        onChange={date => props.handleOnChange(date ? format(date, 'yyyy-MM-dd') : '')}
+        disabled={props.disabled}
+        slotProps={{ textField: { variant: 'standard', size: 'small', sx: { width: 150 } } }}
+      />
+    );
+  }
+  return <MaterialValueEditor {...props} />;
+};
 
 export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilderComponentProps) => {
   const context = useMemo(() => ({ query, onQueryChange }), [query, onQueryChange]);
@@ -72,7 +87,7 @@ export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilde
             context={context}
             controlElements={{
               combinatorSelector: CombinatorSelector,
-              operatorSelector: OperatorSelector,
+              valueEditor: ValueEditor,
               addRuleAction: AddRuleAction,
               addGroupAction: AddGroupAction,
               removeRuleAction: RemoveAction,
