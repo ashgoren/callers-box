@@ -1,4 +1,6 @@
-import { Box, Button } from '@mui/material';
+import { useState } from 'react';
+import { Box, IconButton, Menu, MenuItem } from '@mui/material';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useConfirm } from 'material-ui-confirm';
 import { FilterButton } from '@/components/QueryBuilder/FilterButton';
 import { countActiveRules } from '@/components/QueryBuilder/utils';
@@ -13,11 +15,13 @@ export const TableControls = ({ model, query, setFilterOpen }: {
   setFilterOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
   const confirm = useConfirm();
+  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
 
   const handleClearState = async () => {
+    setMenuAnchor(null);
     const { confirmed } = await confirm({
       title: 'Clear all state',
-      description: 'Are you sure you want to clear all state, including filters, sort, etc?',
+      description: <>Are you sure you want to clear all state, including filters, sort, etc?<br /><strong>This action cannot be undone.</strong></>,
       confirmationText: 'Clear',
       cancellationText: 'Cancel',
     });
@@ -33,13 +37,15 @@ export const TableControls = ({ model, query, setFilterOpen }: {
         activeRuleCount={countActiveRules(query.rules)}
       />
 
-      <Button
-        size='small'
-        color='error'
-        onClick={handleClearState}
-      >
-        Clear all state
-      </Button>
+      <IconButton onClick={(e) => setMenuAnchor(e.currentTarget)}>
+        <MoreVertIcon />
+      </IconButton>
+
+      <Menu anchorEl={menuAnchor} open={Boolean(menuAnchor)} onClose={() => setMenuAnchor(null)}>
+        <MenuItem onClick={handleClearState}>
+          Clear all state
+        </MenuItem>
+      </Menu>
     </Box>
   );
 };
