@@ -20,6 +20,7 @@ export const Layout = ({ children }: { children: ReactNode }) => {
       <SnackbarProvider
         maxSnack={3}
         autoHideDuration={4000}
+        disableWindowBlurListener
         iconVariant={{ error: <ErrorOutlineIcon sx={{mr: 1}} />  }}
         action={(snackbarId) => (
           <IconButton size='small' color='inherit' onClick={() => closeSnackbar(snackbarId)}>
