@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Box, IconButton, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
 import { Add, CreateNewFolder, Close } from '@mui/icons-material';
 import { QueryBuilder } from 'react-querybuilder';
@@ -52,14 +51,39 @@ const RemoveAction = ({ handleOnClick, disabled }: ActionProps) => (
   </IconButton>
 );
 
+const DatePickerInput = ({ value, onChange, disabled }: { value: string; onChange: (v: string) => void; disabled?: boolean }) => (
+  <DatePicker
+    value={value ? parseISO(value) : null}
+    onChange={date => onChange(date ? format(date, 'yyyy-MM-dd') : '')}
+    disabled={disabled}
+    slotProps={{ textField: { variant: 'standard', size: 'small', sx: { width: 150 } } }}
+  />
+);
+
 const ValueEditor = (props: ValueEditorProps) => {
-  if (props.inputType === 'date') {
+  if (props.inputType === 'date' && props.operator !== 'null' && props.operator !== 'notNull') {
+    if (props.operator === 'between' || props.operator === 'notBetween') {
+      const [from = '', to = ''] = (props.value ?? '').split(',');
+      return (
+        <>
+          <DatePickerInput
+            value={from}
+            disabled={props.disabled}
+            onChange={date => props.handleOnChange(`${date},${to}`)}
+          />
+          <DatePickerInput
+            value={to}
+            disabled={props.disabled}
+            onChange={date => props.handleOnChange(`${from},${date}`)}
+          />
+        </>
+      );
+    }
     return (
-      <DatePicker
-        value={props.value ? parseISO(props.value) : null}
-        onChange={date => props.handleOnChange(date ? format(date, 'yyyy-MM-dd') : '')}
+      <DatePickerInput
+        value={props.value ?? ''}
         disabled={props.disabled}
-        slotProps={{ textField: { variant: 'standard', size: 'small', sx: { width: 150 } } }}
+        onChange={props.handleOnChange}
       />
     );
   }
@@ -67,8 +91,6 @@ const ValueEditor = (props: ValueEditorProps) => {
 };
 
 export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilderComponentProps) => {
-  const context = useMemo(() => ({ query, onQueryChange }), [query, onQueryChange]);
-
   return (
     <Box sx={styles}>
       <QueryBuilderDnD dnd={{ ...ReactDnD, ...ReactDndHtml5Backend, ...ReactDndTouchBackend }}>
@@ -84,7 +106,6 @@ export const VisualQueryBuilder = ({ fields, query, onQueryChange }: QueryBuilde
             getDefaultOperator={getDefaultOperatorForField}
             getValueEditorType={getValueEditorTypeForField}
             getValues={getValuesForField}
-            context={context}
             controlElements={{
               combinatorSelector: CombinatorSelector,
               valueEditor: ValueEditor,
