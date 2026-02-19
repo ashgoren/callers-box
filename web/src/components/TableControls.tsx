@@ -1,4 +1,5 @@
 import { Box, Button } from '@mui/material';
+import { useConfirm } from 'material-ui-confirm';
 import { FilterButton } from '@/components/QueryBuilder/FilterButton';
 import { countActiveRules } from '@/components/QueryBuilder/utils';
 import { clearPersistence } from '@/hooks/usePersistence';
@@ -12,7 +13,20 @@ export const TableControls = ({ model, query, setFilterOpen }: {
   query: RuleGroupType;
   setFilterOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const confirm = useConfirm();
   const { openDrawerForNewRecord } = useDrawerActions();
+
+  const handleClearState = async () => {
+    const { confirmed } = await confirm({
+      title: 'Clear all state',
+      description: 'Are you sure you want to clear all state, including filters, sort, etc?',
+      confirmationText: 'Clear',
+      cancellationText: 'Cancel',
+    });
+    if (!confirmed) return;
+    clearPersistence(`mrt_${model}`);
+    window.location.reload();
+  };
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
@@ -32,12 +46,7 @@ export const TableControls = ({ model, query, setFilterOpen }: {
       <Button
         size='small'
         color='error'
-        onClick={() => {
-          if (window.confirm('Are you sure you want to clear all state, including filters, sort, etc?')) {
-            clearPersistence(`mrt_${model}`);
-            window.location.reload();
-          }
-        }}
+        onClick={handleClearState}
       >
         Clear all state
       </Button>

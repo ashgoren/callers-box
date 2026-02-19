@@ -1,6 +1,7 @@
 import { useMemo, type ReactNode } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import { useConfirm } from 'material-ui-confirm';
 import { useMaterialReactTable } from 'material-react-table';
 import { useDrawerActions } from '@/contexts/DrawerContext';
 import { DrawerLayout } from './DrawerLayout';
@@ -76,7 +77,21 @@ export const RecordView = <TData extends Record<string, any>>({ data, columns, t
 };
 
 const Footer = ({ onDelete }: { onDelete: () => void }) => {
+  const confirm = useConfirm();
   const { closeDrawer, setMode } = useDrawerActions();
+
+  const handleDelete = async () => {
+    const { confirmed } = await confirm({
+      title: 'Delete Record',
+      description: 'Are you sure you want to delete this item?',
+      confirmationText: 'Delete',
+      cancellationText: 'Cancel',
+    });
+    if (confirmed) {
+      onDelete();
+      closeDrawer();
+    }
+  };
 
   return (
     <>
@@ -94,12 +109,7 @@ const Footer = ({ onDelete }: { onDelete: () => void }) => {
       <Button
         variant='contained'
         color='error'
-        onClick={() => {
-          if (confirm('Are you sure you want to delete this item?')) {
-            onDelete();
-            closeDrawer();
-          }
-        }}
+        onClick={handleDelete}
         fullWidth
         sx={{ mt: 1 }}
       >

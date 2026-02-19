@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Box, TextField, Button, Checkbox, FormControlLabel } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
+import { useConfirm } from 'material-ui-confirm';
 import { useReactTable, getCoreRowModel } from '@tanstack/react-table';
 import { DrawerLayout } from './DrawerLayout';
 import { useDrawerActions, useDrawerState } from '@/contexts/DrawerContext';
@@ -34,6 +35,7 @@ export const RecordEdit = <TData extends MRT_RowData>({
   hasPendingRelationChanges,
   children
 }: RecordEditProps<TData>) => {
+  const confirm = useConfirm();
   const { mode } = useDrawerState();
   const { setMode, closeDrawer } = useDrawerActions();
 
@@ -62,10 +64,15 @@ export const RecordEdit = <TData extends MRT_RowData>({
     return Object.keys(formData).some((key) => formData[key] !== data[key]);
   }, [formData, data]);
 
-  const handleCancel = () => {
+  const handleCancel = async () => {
     if (isDirty || hasPendingRelationChanges) {
-      const confirmCancel = window.confirm('You have unsaved changes. Are you sure you want to discard them?');
-      if (!confirmCancel) return;
+      const { confirmed } = await confirm({
+        title: 'Unsaved Changes',
+        description: 'You have unsaved changes. Are you sure you want to discard them?',
+        confirmationText: 'Discard',
+        cancellationText: 'Keep Editing',
+      });
+      if (!confirmed) return;
     }
     navigateAway();
   };

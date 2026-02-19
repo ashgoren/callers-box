@@ -16,6 +16,7 @@ import { Home } from './components/Home';
 import { Spinner } from '@/components/shared';
 import { SignInPage } from '@/components/auth/SignInPage';
 import { useAuth } from '@/contexts/AuthContext';
+import { ConfirmProvider } from 'material-ui-confirm';
 import { logEnvironment } from './lib/utils';
 
 const ProtectedRoute = () => {
@@ -36,17 +37,19 @@ function App() {
             <DrawerProvider>
               <UndoProvider>
                 <TitleProvider>
-                  <Layout>
-                    <Routes>
-                      <Route path='/signin' element={<SignInPage />} />
-                      <Route element={<ProtectedRoute />}>
-                        <Route path='/' element={<Home />} />
-                        <Route path='/dances' element={<Dances />} />
-                        <Route path='/programs' element={<Programs />} />
-                        <Route path='/choreographers' element={<Choreographers />} />
-                      </Route>
-                    </Routes>
-                  </Layout>
+                  <ConfirmProvider>
+                    <Layout>
+                      <Routes>
+                        <Route path='/signin' element={<SignInPage />} />
+                        <Route element={<ProtectedRoute />}>
+                          <Route path='/' element={<Home />} />
+                          <Route path='/dances' element={<Dances />} />
+                          <Route path='/programs' element={<Programs />} />
+                          <Route path='/choreographers' element={<Choreographers />} />
+                        </Route>
+                      </Routes>
+                    </Layout>
+                  </ConfirmProvider>
                 </TitleProvider>
               </UndoProvider>
             </DrawerProvider>

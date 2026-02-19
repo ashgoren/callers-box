@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { formatQuery } from 'react-querybuilder';
 import { parseSQL } from 'react-querybuilder/parseSQL';
 import { Box, Button, Collapse, Paper } from '@mui/material';
+import { useConfirm } from 'material-ui-confirm';
 import { ModeToggle } from './ModeToggle';
 import { VisualQueryBuilder } from './VisualQueryBuilder';
 import { SQLEditor } from './SQLEditor';
@@ -23,6 +24,7 @@ export const QueryBuilderComponent = ({ fields, defaultQuery, query, onQueryChan
   const [mode, setMode] = useState<QueryMode>('visual');
   const [sqlText, setSqlText] = useState('');
   const [sqlError, setSqlError] = useState<string | null>(null);
+  const confirm = useConfirm();
 
   // Sync SQL when switching to SQL mode
   const handleModeChange = (newMode: QueryMode) => {
@@ -50,8 +52,13 @@ export const QueryBuilderComponent = ({ fields, defaultQuery, query, onQueryChan
     }
   };
 
-  const handleClearFilters = () => {
-    const confirmed = window.confirm('Are you sure you want to clear all filters?');
+  const handleClearFilters = async () => {
+    const { confirmed } = await confirm({
+      title: 'Clear Filters',
+      description: 'Are you sure you want to clear all filters?',
+      confirmationText: 'Clear',
+      cancellationText: 'Cancel',
+    });
     if (!confirmed) return;
     onQueryChange(defaultQuery);
     setFilterOpen(false);
