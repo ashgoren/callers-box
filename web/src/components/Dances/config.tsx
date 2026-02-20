@@ -29,13 +29,13 @@ export const columns: MRT_ColumnDef<Dance>[] = [
     size: 250,
     minSize: 100,
   },
-  {
-    accessorKey: 'id',
-    header: 'ID',
-    enableColumnFilter: false,
-    size: 120,
-    minSize: 55,
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: 'ID',
+  //   enableColumnFilter: false,
+  //   size: 120,
+  //   minSize: 55,
+  // },
   {
     id: 'choreographers',
     header: '🔗 Choreographers',
@@ -116,6 +116,14 @@ export const columns: MRT_ColumnDef<Dance>[] = [
       getId={(joinRow) => joinRow.program.id}
       getLabel={(joinRow) => `${joinRow.program.date} - ${joinRow.program.location}`}
     />
+  },
+  {
+    accessorKey: 'created_at',
+    header: 'Date Added',
+    enableColumnFilter: false,
+    Cell: ({ row }) => new Date(row.original.created_at).toISOString().split('T')[0],
+    size: 170,
+    minSize: 100,
   }
 ]
 
@@ -128,7 +136,7 @@ const linkVideo = (video?: string | null) => {
 };
 
 export const tableInitialState = {
-  sorting: [{ id: 'id', desc: false }],
+  sorting: [{ id: 'created_at', desc: true }],
   columnPinning: { left: ['title'] },
   columnVisibility: {
     url: false,

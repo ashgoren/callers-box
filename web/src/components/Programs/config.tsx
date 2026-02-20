@@ -14,13 +14,13 @@ export const newRecord = {
 // TABLE CONFIG
 
 export const columns: MRT_ColumnDef<Program>[] = [
-  {
-    accessorKey: 'id',
-    header: 'ID',
-    enableColumnFilter: false,
-    size: 120,
-    minSize: 55,
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: 'ID',
+  //   enableColumnFilter: false,
+  //   size: 120,
+  //   minSize: 55,
+  // },
   {
     accessorKey: 'date',
     header: 'Date',

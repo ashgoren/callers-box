@@ -136,7 +136,7 @@ export const RecordEdit = <TData extends MRT_RowData>({
           const key = column.id;
 
           // Skip non-editable columns
-          if (key === 'id') return null; // skip id column
+          if (key === 'id' || key === 'created_at') return null; // skip id and created_at columns
           if (!('accessorKey' in column.columnDef)) return null; // skip display columns
           if ((column.columnDef as ColumnDefWithMeta<TData>).meta?.readonly) return null;
 

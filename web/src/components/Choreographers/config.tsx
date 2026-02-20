@@ -12,13 +12,13 @@ export const newRecord = {
 // TABLE CONFIG
 
 export const columns: MRT_ColumnDef<Choreographer>[] = [
-  {
-    accessorKey: 'id',
-    header: 'ID',
-    enableColumnFilter: false,
-    size: 10,
-    minSize: 5,
-  },
+  // {
+  //   accessorKey: 'id',
+  //   header: 'ID',
+  //   enableColumnFilter: false,
+  //   size: 10,
+  //   minSize: 5,
+  // },
   {
     accessorKey: 'name',
     header: 'Name',
