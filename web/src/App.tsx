@@ -9,7 +9,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router';
 import { Layout } from './components/layouts/Layout';
 import { Dances } from './components/Dances';
 import { Programs } from './components/Programs';
-import { SettingsPage, ChoreographersList } from './components/Settings';
+import { SettingsPage, ChoreographersList, KeyMovesList, VibesList } from './components/Settings';
 import { Spinner } from '@/components/shared';
 import { SignInPage } from '@/components/auth/SignInPage';
 import { useAuth } from '@/contexts/AuthContext';
@@ -46,6 +46,8 @@ function App() {
                         <Route path='/programs' element={<Programs />} />
                         <Route path='/settings' element={<SettingsPage />} />
                         <Route path='/settings/choreographers' element={<ChoreographersList />} />
+                        <Route path='/settings/key-moves' element={<KeyMovesList />} />
+                        <Route path='/settings/vibes' element={<VibesList />} />
                       </Route>
                     </Routes>
                   </Layout>

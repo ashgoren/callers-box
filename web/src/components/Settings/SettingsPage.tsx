@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router';
 import { useTitle } from '@/contexts/TitleContext';
 import { Box, List, ListItemButton, ListItemIcon, ListItemText } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
+import KeyIcon from '@mui/icons-material/Key';
+import MoodIcon from '@mui/icons-material/Mood';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
 const SETTINGS_ITEMS = [
@@ -12,6 +14,18 @@ const SETTINGS_ITEMS = [
     path: '/settings/choreographers',
     icon: <PeopleIcon />,
   },
+  {
+    label: 'Key Moves',
+    description: 'Manage key move tags',
+    path: '/settings/key-moves',
+    icon: <KeyIcon />,
+  },
+  {
+    label: 'Vibes',
+    description: 'Manage vibe tags',
+    path: '/settings/vibes',
+    icon: <MoodIcon />,
+  }
 ];
 
 export const SettingsPage = () => {

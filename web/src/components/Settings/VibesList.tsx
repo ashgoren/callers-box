@@ -8,26 +8,26 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { Spinner, ErrorMessage } from '@/components/shared';
 import { useTitle } from '@/contexts/TitleContext';
-import { useChoreographers, useCreateChoreographer, useUpdateChoreographer, useDeleteChoreographer } from '@/hooks/useChoreographers';
+import { useVibes, useCreateVibe, useUpdateVibe, useDeleteVibe } from '@/hooks/useVibes';
 
-export const ChoreographersList = () => {
+export const VibesList = () => {
   const { setTitle } = useTitle();
-  useEffect(() => setTitle('Choreographers'), [setTitle]);
+  useEffect(() => setTitle('Vibes'), [setTitle]);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [editingId, setEditingId] = useState<number | 'new' | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  const { data, isLoading, error } = useChoreographers();
-  const { mutateAsync: createChoreographer, isPending: isCreating } = useCreateChoreographer();
-  const { mutateAsync: updateChoreographer, isPending: isUpdating } = useUpdateChoreographer();
-  const { mutateAsync: deleteChoreographer } = useDeleteChoreographer();
+  const { data, isLoading, error } = useVibes();
+  const { mutateAsync: createVibe, isPending: isCreating } = useCreateVibe();
+  const { mutateAsync: updateVibe, isPending: isUpdating } = useUpdateVibe();
+  const { mutateAsync: deleteVibe } = useDeleteVibe();
 
   if (isLoading) return <Spinner />;
   if (error) return <ErrorMessage error={error} />;
 
-  const filtered = (data ?? []).filter(choreographer =>
-    choreographer.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filtered = (data ?? []).filter(vibe =>
+    vibe.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const isSaving = isCreating || isUpdating;
@@ -47,9 +47,9 @@ export const ChoreographersList = () => {
     if (!trimmed) return;
     try {
       if (editingId === 'new') {
-        await createChoreographer({ name: trimmed });
+        await createVibe({ name: trimmed });
       } else if (editingId !== null) {
-        await updateChoreographer({ id: editingId, updates: { name: trimmed } });
+        await updateVibe({ id: editingId, updates: { name: trimmed } });
       }
       setEditingId(null);
       setEditValue('');
@@ -60,7 +60,7 @@ export const ChoreographersList = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteChoreographer({ id });
+      await deleteVibe({ id });
     } catch {
       // error already toasted by the hook
     }
@@ -100,7 +100,7 @@ export const ChoreographersList = () => {
       <TextField
         fullWidth
         size='small'
-        placeholder='Search choreographers...'
+        placeholder='Search vibes...'
         value={searchTerm}
         onChange={e => setSearchTerm(e.target.value)}
         slotProps={{
@@ -116,12 +116,12 @@ export const ChoreographersList = () => {
       />
 
       <List disablePadding>
-        {filtered.map(choreographer => {
-          const isEditing = editingId === choreographer.id;
-          const hasLinkedDances = choreographer.dances_choreographers.length > 0;
+        {filtered.map(vibe => {
+          const isEditing = editingId === vibe.id;
+          const hasLinkedDances = vibe.dances_vibes.length > 0;
           return (
             <ListItem
-              key={choreographer.id}
+              key={vibe.id}
               disablePadding
               sx={{ borderBottom: '1px solid', borderColor: 'divider', py: 0.5 }}
               secondaryAction={
@@ -129,7 +129,7 @@ export const ChoreographersList = () => {
                   <Box sx={{ display: 'flex', gap: 0.5 }}>
                     <IconButton
                       size='small'
-                      onClick={() => handleEdit(choreographer.id, choreographer.name)}
+                      onClick={() => handleEdit(vibe.id, vibe.name)}
                       disabled={editingId !== null}
                     >
                       <EditIcon fontSize='small' />
@@ -138,7 +138,7 @@ export const ChoreographersList = () => {
                       <span>
                         <IconButton
                           size='small'
-                          onClick={() => handleDelete(choreographer.id)}
+                          onClick={() => handleDelete(vibe.id)}
                           disabled={hasLinkedDances || editingId !== null}
                           color='error'
                         >
@@ -152,16 +152,16 @@ export const ChoreographersList = () => {
             >
               {isEditing ? editField() : (
                 <ListItemText
-                  primary={choreographer.dances_choreographers.length > 0 ? (
+                  primary={vibe.dances_vibes.length > 0 ? (
                     <>
-                      {choreographer.name}{' '}
-                      <Tooltip title={`${choreographer.dances_choreographers.length} linked ${choreographer.dances_choreographers.length === 1 ? 'dance' : 'dances'}`}>
+                      {vibe.name}{' '}
+                      <Tooltip title={`${vibe.dances_vibes.length} linked ${vibe.dances_vibes.length === 1 ? 'dance' : 'dances'}`}>
                         <Typography component='span' variant='body2' color='text.secondary'>
-                          ({choreographer.dances_choreographers.length})
+                          ({vibe.dances_vibes.length})
                         </Typography>
                       </Tooltip>
                     </>
-                  ) : choreographer.name}
+                  ) : vibe.name}
                   sx={{ pr: 10 }}
                 />
               )}
@@ -175,7 +175,7 @@ export const ChoreographersList = () => {
             sx={{ borderBottom: '1px solid', borderColor: 'divider', py: 0.5 }}
             secondaryAction={editActions}
           >
-            {editField('New choreographer name...')}
+            {editField('New vibe...')}
           </ListItem>
         )}
       </List>
@@ -187,7 +187,7 @@ export const ChoreographersList = () => {
           sx={{ mt: 1 }}
           disabled={editingId !== null}
         >
-          Add choreographer
+          Add vibe
         </Button>
       )}
     </Box>
