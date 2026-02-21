@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { useConfirm } from 'material-ui-confirm';
 import { useMaterialReactTable } from 'material-react-table';
@@ -12,10 +12,12 @@ type RecordViewProps<TData extends MRT_RowData> = {
   columns: MRT_ColumnDef<TData>[];
   title?: string;
   onDelete: () => void;
+  canDelete?: boolean;
+  deleteDisabledReason?: string;
   children?: React.ReactNode;
 };
 
-export const RecordView = <TData extends Record<string, any>>({ data, columns, title, onDelete, children }: RecordViewProps<TData>) => {
+export const RecordView = <TData extends Record<string, any>>({ data, columns, title, children, ...deleteProps }: RecordViewProps<TData>) => {
   const tableData = useMemo(() => [data], [data]); // Wrap data in an array for single row
 
   // Custom cell renderer to handle MRT's Cell rendering outside of the table context
@@ -42,7 +44,7 @@ export const RecordView = <TData extends Record<string, any>>({ data, columns, t
   return (
     <DrawerLayout
       title={title || 'Details'}
-      footer={<Footer onDelete={onDelete} />}
+      footer={<Footer {...deleteProps} />}
     >
       {/* Fields */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -76,7 +78,11 @@ export const RecordView = <TData extends Record<string, any>>({ data, columns, t
   );
 };
 
-const Footer = ({ onDelete }: { onDelete: () => void }) => {
+const Footer = ({ onDelete, canDelete=true, deleteDisabledReason }: {
+  onDelete: () => void;
+  canDelete?: boolean;
+  deleteDisabledReason?: string
+}) => {
   const confirm = useConfirm();
   const { closeDrawer, setMode } = useDrawerActions();
 
@@ -106,15 +112,20 @@ const Footer = ({ onDelete }: { onDelete: () => void }) => {
         Edit
       </Button>
 
-      <Button
-        variant='contained'
-        color='error'
-        onClick={handleDelete}
-        fullWidth
-        sx={{ mt: 1 }}
-      >
-        Delete
-      </Button>
+      <Tooltip title={canDelete ? '' : deleteDisabledReason}>
+        <span>
+          <Button
+            variant='contained'
+            color='error'
+            onClick={handleDelete}
+            disabled={!canDelete}
+            fullWidth
+            sx={{ mt: 1 }}
+          >
+            Delete
+          </Button>
+        </span>
+      </Tooltip>
     </>
   );
 };

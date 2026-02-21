@@ -108,6 +108,8 @@ export const Choreographer = ({ id }: { id?: number }) => {
       columns={columns}
       title={`Choreographer: ${choreographer.name}`}
       onDelete={handleDelete}
+      canDelete={choreographer.dances_choreographers.length === 0}
+      deleteDisabledReason={'Cannot delete choreographer with linked dances'}
     >
       <RelationList
         model='dance'
