@@ -32,7 +32,8 @@ export const useUpdateDance = () => {
       queryClient.invalidateQueries({ queryKey: ['programs'] });
       queryClient.invalidateQueries({ queryKey: ['program'] });
       queryClient.invalidateQueries({ queryKey: ['choreographers'] });
-      queryClient.invalidateQueries({ queryKey: ['choreographer'] });
+      queryClient.invalidateQueries({ queryKey: ['key_moves'] });
+      queryClient.invalidateQueries({ queryKey: ['vibes'] });
     },
     onError: (err: Error) => toastError(err.message || 'Error updating dance')
   });
@@ -60,7 +61,8 @@ export const useDeleteDance = () => {
       queryClient.invalidateQueries({ queryKey: ['programs'] });
       queryClient.invalidateQueries({ queryKey: ['program'] });
       queryClient.invalidateQueries({ queryKey: ['choreographers'] });
-      queryClient.invalidateQueries({ queryKey: ['choreographer'] });
+      queryClient.invalidateQueries({ queryKey: ['key_moves'] });
+      queryClient.invalidateQueries({ queryKey: ['vibes'] });
     },
     onError: (err: Error) => toastError(err.message || 'Error deleting dance')
   });
@@ -82,11 +84,27 @@ const buildRelationsColumns = (dance: Dance) => {
     return nameA.localeCompare(nameB);
   });
 
+  const sortedKeyMoves = (dance.dances_key_moves ?? []).sort((a, b) => {
+    const nameA = a.key_move?.name || '';
+    const nameB = b.key_move?.name || '';
+    return nameA.localeCompare(nameB);
+  });
+
+  const sortedVibes = (dance.dances_vibes ?? []).sort((a, b) => {
+    const nameA = a.vibe?.name || '';
+    const nameB = b.vibe?.name || '';
+    return nameA.localeCompare(nameB);
+  });
+
   return {
     ...dance,
     programs_dances: sortedPrograms,
     programNames: sortedPrograms.map(pd => pd.program.location).join(', '),
     dances_choreographers: sortedChoreographers,
-    choreographerNames: sortedChoreographers.map(dc => dc.choreographer.name).join(', ')
+    choreographerNames: sortedChoreographers.map(dc => dc.choreographer.name).join(', '),
+    dances_key_moves: sortedKeyMoves,
+    keyMoveNames: sortedKeyMoves.map(dk => dk.key_move.name).join(', '),
+    dances_vibes: sortedVibes,
+    vibeNames: sortedVibes.map(dv => dv.vibe.name).join(', ')
   };
 };

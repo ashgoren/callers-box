@@ -45,6 +45,22 @@ export const columns: MRT_ColumnDef<Dance>[] = [
     Cell: ({ row }) => row.original.dances_choreographers.map(dc => dc.choreographer.name).join(', ')
   },
   {
+    id: 'keyMoves',
+    header: '🔗 Key Moves',
+    enableColumnFilter: false,
+    size: 200,
+    minSize: 170,
+    Cell: ({ row }) => row.original.dances_key_moves.map(dkm => dkm.key_move.name).join(', ')
+  },
+  {
+    id: 'vibes',
+    header: '🔗 Vibes',
+    enableColumnFilter: false,
+    size: 200,
+    minSize: 170,
+    Cell: ({ row }) => row.original.dances_vibes.map(dv => dv.vibe.name).join(', ')
+  },
+  {
     accessorKey: 'difficulty',
     header: 'Difficulty',
     size: 150,
@@ -146,6 +162,8 @@ export const tableInitialState = {
 export const queryFields = [
   { name: 'title', label: 'Title', inputType: 'string' },
   { name: 'choreographerNames', label: 'Choreographers', inputType: 'string' },
+  { name: 'keyMoveNames', label: 'Key Moves', inputType: 'string' },
+  { name: 'vibeNames', label: 'Vibes', inputType: 'string' },
   { name: 'difficulty', label: 'Difficulty', inputType: 'number' },
   { name: 'notes', label: 'Notes', inputType: 'string' },
   { name: 'place_in_program', label: 'Place in Program', inputType: 'string' },

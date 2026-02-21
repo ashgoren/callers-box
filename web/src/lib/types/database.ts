@@ -10,7 +10,9 @@ export type Model = 'dance' | 'program' | 'choreographer' | 'key_move' | 'vibe';
 export type DanceRow = Tables['dances']['Row'];
 export type Dance = DanceRow & {
   programs_dances: { id: number; order: number; program: ProgramRow }[],
-  dances_choreographers: { id: number; choreographer: ChoreographerRow }[]
+  dances_choreographers: { id: number; choreographer: ChoreographerRow }[],
+  dances_key_moves: { id: number; key_move: KeyMoveRow }[],
+  dances_vibes: { id: number; vibe: VibeRow }[],
 };
 export type DanceInsert = Tables['dances']['Insert'];
 export type DanceUpdate = Tables['dances']['Update'];

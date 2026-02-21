@@ -1,7 +1,11 @@
 import { useNotify } from '@/hooks/useNotify';
 import { useDance, useCreateDance, useUpdateDance, useDeleteDance } from '@/hooks/useDances';
 import { useAddChoreographerToDance, useRemoveChoreographerFromDance } from '@/hooks/useDancesChoreographers';
+import { useAddKeyMoveToDance, useRemoveKeyMoveFromDance } from '@/hooks/useDancesKeyMoves';
+import { useAddVibeToDance, useRemoveVibeFromDance } from '@/hooks/useDancesVibes';
 import { useChoreographers } from '@/hooks/useChoreographers';
+import { useKeyMoves } from '@/hooks/useKeyMoves';
+import { useVibes } from '@/hooks/useVibes';
 import { usePendingRelations } from '@/hooks/usePendingRelations';
 import { RelationEditor } from '@/components/RelationEditor';
 import { Spinner, ErrorMessage } from '@/components/shared';
@@ -23,20 +27,37 @@ export const Dance = ({ id }: { id?: number }) => {
   const { mutateAsync: deleteDance } = useDeleteDance();
   const { mutateAsync: addChoreographer } = useAddChoreographerToDance();
   const { mutateAsync: removeChoreographer } = useRemoveChoreographerFromDance();
+  const { mutateAsync: addKeyMove } = useAddKeyMoveToDance();
+  const { mutateAsync: removeKeyMove } = useRemoveKeyMoveFromDance();
+  const { mutateAsync: addVibe } = useAddVibeToDance();
+  const { mutateAsync: removeVibe } = useRemoveVibeFromDance();
 
   const { data: dance, isLoading, error } = useDance(Number(id));
   const { data: choreographers } = useChoreographers();
-
-  const pending = usePendingRelations();
+  const { data: keyMoves } = useKeyMoves();
+  const { data: vibes } = useVibes();
+  const pendingChoreographers = usePendingRelations();
+  const pendingKeyMoves = usePendingRelations();
+  const pendingVibes = usePendingRelations();
 
   const handleSave = async (updates: DanceUpdate) => {
     const { id: danceId } = mode === 'create'
       ? await createDance(updates as DanceInsert)
       : await updateDance({ id: dance!.id, updates });
 
-    const { added, removed } = await pending.commitChanges(
+    const { added: addedChoreographers, removed: removedChoreographers } = await pendingChoreographers.commitChanges(
       (choreographerId) => addChoreographer({ danceId, choreographerId }),
       (choreographerId) => removeChoreographer({ danceId, choreographerId })
+    );
+
+    const { added: addedKeyMoves, removed: removedKeyMoves } = await pendingKeyMoves.commitChanges(
+      (keyMoveId) => addKeyMove({ danceId, keyMoveId }),
+      (keyMoveId) => removeKeyMove({ danceId, keyMoveId })
+    );
+
+    const { added: addedVibes, removed: removedVibes } = await pendingVibes.commitChanges(
+      (vibeId) => addVibe({ danceId, vibeId }),
+      (vibeId) => removeVibe({ danceId, vibeId })
     );
 
     if (mode === 'create') {
@@ -48,7 +69,9 @@ export const Dance = ({ id }: { id?: number }) => {
             table: 'dances',
             record: { id: danceId, ...updates }
           },
-          ...relationOps('dances_choreographers', added, [])
+          ...relationOps('dances_choreographers', addedChoreographers, []),
+          ...relationOps('dances_key_moves', addedKeyMoves, []),
+          ...relationOps('dances_vibes', addedVibes, [])
         ]
       });
       toastSuccess('Dance created');
@@ -65,7 +88,9 @@ export const Dance = ({ id }: { id?: number }) => {
             before: beforeValues(dance!, updates, newRecord),
             after: dbRecord(updates, newRecord)
           },
-          ...relationOps('dances_choreographers', added, removed)
+          ...relationOps('dances_choreographers', addedChoreographers, removedChoreographers),
+          ...relationOps('dances_key_moves', addedKeyMoves, removedKeyMoves),
+          ...relationOps('dances_vibes', addedVibes, removedVibes)
         ]
       });
       toastSuccess('Dance updated');
@@ -83,6 +108,14 @@ export const Dance = ({ id }: { id?: number }) => {
           dance.dances_choreographers.map(dc => ({
             id: dc.id, dance_id: dance.id, choreographer_id: dc.choreographer.id
           }))),
+        ...relationOps('dances_key_moves', [],
+          dance.dances_key_moves.map(dkm => ({
+            id: dkm.id, dance_id: dance.id, key_move_id: dkm.key_move.id
+          }))),
+        ...relationOps('dances_vibes', [],
+          dance.dances_vibes.map(dv => ({
+            id: dv.id, dance_id: dance.id, vibe_id: dv.vibe.id
+          }))),
         ...relationOps('programs_dances', [],
           dance.programs_dances.map(pd => ({
             id: pd.id, dance_id: dance.id, program_id: pd.program.id, order: pd.order
@@ -99,7 +132,7 @@ export const Dance = ({ id }: { id?: number }) => {
         columns={columns}
         title={'New Dance'}
         onSave={handleSave}
-        hasPendingRelationChanges={pending.hasPendingChanges}
+        hasPendingRelationChanges={pendingChoreographers.hasPendingChanges || pendingKeyMoves.hasPendingChanges || pendingVibes.hasPendingChanges}
       >
         <RelationEditor
           model='choreographer'
@@ -110,7 +143,29 @@ export const Dance = ({ id }: { id?: number }) => {
           options={choreographers ?? []}
           getOptionLabel={choreographer => choreographer.name}
           getOptionId={choreographer => choreographer.id}
-          pending={pending}
+          pending={pendingChoreographers}
+        />
+        <RelationEditor
+          model='key_move'
+          label='Key Moves'
+          relations={[] as DanceType['dances_key_moves']}
+          getRelationId={dkm => dkm.key_move.id}
+          getRelationLabel={dkm => dkm.key_move.name}
+          options={keyMoves ?? []}
+          getOptionLabel={keyMove => keyMove.name}
+          getOptionId={keyMove => keyMove.id}
+          pending={pendingKeyMoves}
+        />
+        <RelationEditor
+          model='vibe'
+          label='Vibes'
+          relations={[] as DanceType['dances_vibes']}
+          getRelationId={dv => dv.vibe.id}
+          getRelationLabel={dv => dv.vibe.name}
+          options={vibes ?? []}
+          getOptionLabel={vibe => vibe.name}
+          getOptionId={vibe => vibe.id}
+          pending={pendingVibes}
         />
       </RecordEdit>
     );
@@ -127,7 +182,7 @@ export const Dance = ({ id }: { id?: number }) => {
         columns={columns}
         title={`Edit: ${dance.title}`}
         onSave={handleSave}
-        hasPendingRelationChanges={pending.hasPendingChanges}
+        hasPendingRelationChanges={pendingChoreographers.hasPendingChanges || pendingKeyMoves.hasPendingChanges || pendingVibes.hasPendingChanges}
       >
         <RelationEditor
           model='choreographer'
@@ -138,7 +193,29 @@ export const Dance = ({ id }: { id?: number }) => {
           options={choreographers ?? []}
           getOptionId={choreographer => choreographer.id}
           getOptionLabel={choreographer => choreographer.name}
-          pending={pending}
+          pending={pendingChoreographers}
+        />
+        <RelationEditor
+          model='key_move'
+          label='Key Moves'
+          relations={dance.dances_key_moves}
+          getRelationId={dkm => dkm.key_move.id}
+          getRelationLabel={dkm => dkm.key_move.name}
+          options={keyMoves ?? []}
+          getOptionLabel={keyMove => keyMove.name}
+          getOptionId={keyMove => keyMove.id}
+          pending={pendingKeyMoves}
+        />
+        <RelationEditor
+          model='vibe'
+          label='Vibes'
+          relations={dance.dances_vibes}
+          getRelationId={dv => dv.vibe.id}
+          getRelationLabel={dv => dv.vibe.name}
+          options={vibes ?? []}
+          getOptionLabel={vibe => vibe.name}
+          getOptionId={vibe => vibe.id}
+          pending={pendingVibes}
         />
       </RecordEdit>
     );
@@ -164,6 +241,20 @@ export const Dance = ({ id }: { id?: number }) => {
         relations={dance.dances_choreographers}
         getRelationId={(dc) => dc.choreographer.id}
         getRelationLabel={(dc) => dc.choreographer.name}
+      />
+      <RelationList
+        model='key_move'
+        label='🔗 Key Moves'
+        relations={dance.dances_key_moves}
+        getRelationId={(dkm) => dkm.key_move.id}
+        getRelationLabel={(dkm) => dkm.key_move.name}
+      />
+      <RelationList
+        model='vibe'
+        label='🔗 Vibes'
+        relations={dance.dances_vibes}
+        getRelationId={(dv) => dv.vibe.id}
+        getRelationLabel={(dv) => dv.vibe.name}
       />
     </RecordView>
   );
